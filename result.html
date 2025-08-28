@@ -33,22 +33,15 @@
   .cert-body { display: flex; align-items: center; padding: 30px 20px; gap: 20px; flex-wrap: wrap; }
   .profile-picture-container { flex: 0 0 150px; text-align: center; }
   .profile-picture { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #2980b9; }
-  .person-info { flex: 1; }
+  .person-info { flex: 1; text-align:left; }
   .person-info .name { font-size: 28px; margin: 0; color: #2c3e50; }
   .person-info .designation { font-size: 20px; margin: 5px 0; color: #2980b9; }
   .person-info .company { font-size: 18px; color: #555; }
 
-  .cert-details { margin: 20px; padding: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
-  .detail-item {
-    background: #ecf0f1;
-    border: 2px solid #2980b9;
-    border-radius: 10px;
-    padding: 12px;
-    text-align: center;
-    font-size: 16px;
-  }
-  .detail-key { font-weight: bold; color: #34495e; display: block; margin-bottom: 5px; }
-  .detail-value { color: #2c3e50; display: block; font-size: 15px; }
+  .cert-details { margin: 20px; padding: 10px; }
+  .detail-item { padding: 10px 0; border-bottom: 1px dashed #bdc3c7; font-size: 16px; display:flex; justify-content:space-between; }
+  .detail-key { font-weight: bold; color: #34495e; }
+  .detail-value { color: #2c3e50; }
 
   .cert-footer {
     display: flex;
@@ -90,6 +83,7 @@
     .cert-body { flex-direction: column; align-items: center; text-align: center; }
     .person-info { flex: none; }
     .cert-footer { flex-direction: column; gap: 10px; align-items: center; }
+    .detail-item { flex-direction: column; text-align:center; }
   }
 </style>
 </head>
@@ -107,9 +101,7 @@
   <a href="index.html">সার্চ পেজে ফিরে যান</a>
 </div>
 
-<!-- QRCode.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<!-- html2pdf.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
@@ -184,7 +176,6 @@ document.addEventListener('DOMContentLoaded', function() {
           </footer>
         `;
 
-        // QR কোড
         new QRCode(document.getElementById("qrcode"), {
             text: window.location.href,
             width: 80,
@@ -192,19 +183,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // PDF Download Button
     downloadBtn.addEventListener('click', function() {
         const element = document.getElementById('certificate-container');
         const opt = {
-            margin:       0.5,
-            filename:     'certificate.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, logging: false },
-            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            margin: 0.5,
+            filename: 'certificate.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, logging: false },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
         html2pdf().set(opt).from(element).save();
     });
-
 });
 </script>
 </body>
