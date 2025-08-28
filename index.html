@@ -21,6 +21,24 @@
         .nav-link { transition: color 0.3s ease; }
         .nav-link:hover { color: #009A00; }
         .footer-link:hover { color: #009A00; }
+
+        /* Slider animation */
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .slider {
+            display: flex;
+            width: max-content;
+            animation: slide 20s linear infinite;
+        }
+        .slider > div {
+            flex-shrink: 0;
+            width: 12rem; /* w-48 in Tailwind */
+            height: 10rem; /* h-40 in Tailwind */
+            margin-right: 1.5rem; /* gap-6 in Tailwind */
+        }
     </style>
     <script>
         function searchCertificate(event) {
@@ -110,9 +128,11 @@
             <p class="text-gray-500">Enter a registration number to see the result.</p>
         </div>
 
-        <!-- ✅ ৭টা বক্স JSON থেকে লোড হবে -->
-        <div id="imageGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
-            <!-- Images will be injected here -->
+        <!-- ✅ Smooth Continuous Infinite Slider -->
+        <div id="imageGridWrapper" class="overflow-hidden mt-10">
+            <div id="imageGrid" class="slider">
+                <!-- Images will be injected here -->
+            </div>
         </div>
     </main>
 
@@ -181,7 +201,6 @@
 
     <!-- Script for loading images -->
     <script>
-        // 👉 এখানে আপনার GitHub JSON raw লিঙ্ক বসান
         const jsonUrl = "https://raw.githubusercontent.com/username/repo/branch/images.json";
 
         async function loadImages() {
@@ -192,20 +211,7 @@
                 const container = document.getElementById("imageGrid");
                 container.innerHTML = "";
 
-                if (data.images && data.images.length > 0) {
-                    data.images.slice(0, 7).forEach((url, index) => {
-                        const box = document.createElement("div");
-                        box.className = "bg-white rounded-lg shadow-md overflow-hidden flex items-center justify-center";
-                        box.innerHTML = `<img src="${url}" alt="Image ${index+1}" class="object-cover w-full h-40">`;
-                        container.appendChild(box);
-                    });
-                } else {
-                    container.innerHTML = `<p class="text-gray-500 col-span-4 text-center">No images found in JSON.</p>`;
-                }
-            } catch (error) {
-                console.error("Image load failed:", error);
-
-                // ফেইল হলে ডেমো ইমেজ দেখাবে
+                const images = data.images && data.images.length > 0 ? data.images.slice(0, 7) : [];
                 const fallbackImages = [
                     "https://via.placeholder.com/200x150?text=1",
                     "https://via.placeholder.com/200x150?text=2",
@@ -216,14 +222,19 @@
                     "https://via.placeholder.com/200x150?text=7"
                 ];
 
-                const container = document.getElementById("imageGrid");
-                container.innerHTML = "";
-                fallbackImages.forEach((url, index) => {
+                const finalImages = images.length ? images : fallbackImages;
+
+                // Duplicate images for infinite smooth effect
+                const allImages = finalImages.concat(finalImages);
+
+                allImages.forEach((url, index) => {
                     const box = document.createElement("div");
-                    box.className = "bg-white rounded-lg shadow-md overflow-hidden flex items-center justify-center";
-                    box.innerHTML = `<img src="${url}" alt="Demo ${index+1}" class="object-cover w-full h-40">`;
+                    box.innerHTML = `<img src="${url}" alt="Image ${index+1}" class="object-cover w-full h-full rounded-lg shadow-md">`;
                     container.appendChild(box);
                 });
+
+            } catch (error) {
+                console.error("Image load failed:", error);
             }
         }
 
