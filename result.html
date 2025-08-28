@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>সার্টিফিকেট ফলাফল</title>
 <style>
-  /* ====== সাধারণ বডি স্টাইল ====== */
   body {
     font-family: 'SolaimanLipi', sans-serif;
     background-color: #f4f6f8;
@@ -22,7 +21,6 @@
     text-decoration: underline;
   }
 
-  /* ====== লোডার ====== */
   #loader {
     text-align: center;
     padding: 50px;
@@ -30,26 +28,14 @@
     color: #555;
   }
 
-  /* ====== না পাওয়া ====== */
   .not-found {
     text-align: center;
     padding: 50px;
     color: #e74c3c;
   }
 
-  .not-found h2 {
-    font-size: 28px;
-    margin-bottom: 15px;
-  }
-
-  .not-found p {
-    font-size: 18px;
-    margin-bottom: 20px;
-  }
-
-  /* ====== সার্টিফিকেট কন্টেইনার ====== */
   .certificate-container {
-    max-width: 800px;
+    max-width: 900px;
     margin: 40px auto;
     background: #fff;
     border-radius: 15px;
@@ -148,6 +134,21 @@
     font-size: 14px;
   }
 
+  /* ====== প্রিন্ট ফ্রেন্ডলি ====== */
+  @media print {
+    body {
+      background-color: #fff;
+    }
+    .certificate-container {
+      box-shadow: none;
+      margin: 0;
+      page-break-after: always;
+    }
+    #loader, .not-found {
+      display: none;
+    }
+  }
+
   /* ====== রেস্পন্সিভ ====== */
   @media (max-width: 600px) {
     .cert-body {
@@ -155,7 +156,6 @@
       align-items: center;
       text-align: center;
     }
-
     .person-info {
       flex: none;
     }
