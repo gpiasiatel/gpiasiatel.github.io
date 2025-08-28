@@ -35,9 +35,35 @@
         }
         .slider > div {
             flex-shrink: 0;
-            width: 18rem; /* w-48 in Tailwind */
-            height: 18rem; /* h-40 in Tailwind */
-            margin-right: 1.5rem; /* gap-6 in Tailwind */
+            width: 18rem; /* w-48 */
+            height: 18rem; /* h-72 */
+            margin-right: 1.5rem; /* gap-6 */
+            cursor: pointer;
+        }
+
+        /* Lightbox / Fullscreen image */
+        #lightbox {
+            display: none;
+            position: fixed;
+            top:0; left:0; right:0; bottom:0;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        #lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        #lightbox span {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
         }
     </style>
     <script>
@@ -55,6 +81,55 @@
             const fakeEvent = { preventDefault: () => {} }; 
             searchCertificate(fakeEvent);
         }
+
+        function openLightbox(src) {
+            const lb = document.getElementById("lightbox");
+            lb.style.display = "flex";
+            lb.querySelector("img").src = src;
+        }
+
+        function closeLightbox() {
+            document.getElementById("lightbox").style.display = "none";
+        }
+
+        async function loadImages() {
+            const jsonUrl = "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/7photo/images.json";
+            try {
+                const res = await fetch(jsonUrl);
+                const data = await res.json();
+
+                const container = document.getElementById("imageGrid");
+                container.innerHTML = "";
+
+                const images = data.images && data.images.length > 0 ? data.images.slice(0, 7) : [];
+                const fallbackImages = [
+                    "https://via.placeholder.com/200x150?text=1",
+                    "https://via.placeholder.com/200x150?text=2",
+                    "https://via.placeholder.com/200x150?text=3",
+                    "https://via.placeholder.com/200x150?text=4",
+                    "https://via.placeholder.com/200x150?text=5",
+                    "https://via.placeholder.com/200x150?text=6",
+                    "https://via.placeholder.com/200x150?text=7"
+                ];
+
+                const finalImages = images.length ? images : fallbackImages;
+
+                // Duplicate images for infinite smooth effect
+                const allImages = finalImages.concat(finalImages);
+
+                allImages.forEach((url, index) => {
+                    const box = document.createElement("div");
+                    box.innerHTML = `<img src="${url}" alt="Image ${index+1}" class="object-cover w-full h-full rounded-lg shadow-md">`;
+                    box.addEventListener("click", () => openLightbox(url));
+                    container.appendChild(box);
+                });
+
+            } catch (error) {
+                console.error("Image load failed:", error);
+            }
+        }
+
+        window.onload = loadImages;
     </script>
 </head>
 <body class="bg-gray-100">
@@ -199,47 +274,11 @@
         </div>
     </footer>
 
-    <!-- Script for loading images -->
-    <script>
-        const jsonUrl = "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/7photo/images.json";
-
-        async function loadImages() {
-            try {
-                const res = await fetch(jsonUrl);
-                const data = await res.json();
-
-                const container = document.getElementById("imageGrid");
-                container.innerHTML = "";
-
-                const images = data.images && data.images.length > 0 ? data.images.slice(0, 7) : [];
-                const fallbackImages = [
-                    "https://via.placeholder.com/200x150?text=1",
-                    "https://via.placeholder.com/200x150?text=2",
-                    "https://via.placeholder.com/200x150?text=3",
-                    "https://via.placeholder.com/200x150?text=4",
-                    "https://via.placeholder.com/200x150?text=5",
-                    "https://via.placeholder.com/200x150?text=6",
-                    "https://via.placeholder.com/200x150?text=7"
-                ];
-
-                const finalImages = images.length ? images : fallbackImages;
-
-                // Duplicate images for infinite smooth effect
-                const allImages = finalImages.concat(finalImages);
-
-                allImages.forEach((url, index) => {
-                    const box = document.createElement("div");
-                    box.innerHTML = `<img src="${url}" alt="Image ${index+1}" class="object-cover w-full h-full rounded-lg shadow-md">`;
-                    container.appendChild(box);
-                });
-
-            } catch (error) {
-                console.error("Image load failed:", error);
-            }
-        }
-
-        window.onload = loadImages;
-    </script>
+    <!-- Lightbox HTML -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <span onclick="closeLightbox()">&times;</span>
+        <img src="" alt="Full Image">
+    </div>
 
 </body>
 </html>
