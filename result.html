@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সার্টিফিকেট ফলাফল</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="certificate-container" id="certificate-container">
+        <div id="loader">লোড হচ্ছে...</div>
+    </div>
+
+    <div id="not-found" class="not-found" style="display: none;">
+        <h2>দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।</h2>
+        <p>আপনার দেওয়া রেজিস্ট্রেশন নম্বরটি সঠিক নয়। অনুগ্রহ করে আবার চেষ্টা করুন।</p>
+        <a href="index.html">সার্চ পেজে ফিরে যান</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ⚠️ এখানে আপনার GitHub রিপোজিটরির Raw data.json ফাইলের লিংকটি দিন
+            const GITHUB_DATA_URL = 'https://raw.githubusercontent.com/your-username/your-repo/main/data.json';
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const regNumber = urlParams.get('reg');
+            const certificateContainer = document.getElementById('certificate-container');
+            const loader = document.getElementById('loader');
+            const notFound = document.getElementById('not-found');
+
+            if (!regNumber) {
+                loader.style.display = 'none';
+                notFound.style.display = 'block';
+                notFound.querySelector('h2').textContent = 'কোনো রেজিস্ট্রেশন নম্বর পাওয়া যায়নি।';
+                return;
+            }
+
+            fetch(GITHUB_DATA_URL)
+                .then(response => response.json())
+                .then(data => {
+                    const person = data.find(item => item.registration_number.toLowerCase() === regNumber.toLowerCase());
+                    loader.style.display = 'none';
+
+                    if (person) {
+                        displayCertificate(person);
+                    } else {
+                        certificateContainer.style.display = 'none';
+                        notFound.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch Error:', error);
+                    loader.style.display = 'none';
+                    certificateContainer.innerHTML = '<p style="color: red; text-align: center;">সার্ভার থেকে ডাটা লোড করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</p>';
+                });
+
+            function displayCertificate(person) {
+                let detailsHtml = '';
+                for (const key in person.details) {
+                    detailsHtml += `
+                        <div class="detail-item">
+                            <span class="detail-key">${key}</span>
+                            <span class="detail-value">${person.details[key]}</span>
+                        </div>`;
+                }
+
+                certificateContainer.innerHTML = `
+                    <header class="cert-header">
+                        <img src="${person.logo_url}" alt="Company Logo" class="company-logo">
+                    </header>
+                    <main class="cert-body">
+                        <div class="profile-picture-container">
+                            <img src="${person.photo_url}" alt="Profile Photo" class="profile-picture">
+                        </div>
+                        <div class="person-info">
+                            <h1 class="name">${person.name}</h1>
+                            <p class="designation">${person.designation}</p>
+                            <p class="company">${person.company}</p>
+                        </div>
+                    </main>
+                    <section class="cert-details">
+                        <h2>বিস্তারিত তথ্য</h2>
+                        ${detailsHtml}
+                    </section>
+                    <footer class="cert-footer">
+                        <p>এটি একটি ডিজিটালভাবে যাচাইকৃত সার্টিফিকেট।</p>
+                    </footer>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
