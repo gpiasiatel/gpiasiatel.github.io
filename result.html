@@ -11,12 +11,6 @@
   #loader { text-align: center; padding: 50px; font-size: 20px; color: #555; }
   .not-found { text-align: center; padding: 50px; color: #e74c3c; }
 
-  button#downloadPdf {
-    background: #2980b9; color: #fff; border: none; padding: 10px 20px;
-    border-radius: 8px; cursor: pointer; font-size: 16px; margin-bottom: 20px;
-  }
-  button#downloadPdf:hover { background: #1c5980; }
-
   .certificate-container {
     max-width: 900px;
     margin: 0 auto;
@@ -76,7 +70,7 @@
       z-index: 0;
     }
     .certificate-container > * { position: relative; z-index: 1; }
-    #loader, .not-found, #downloadPdf { display: none; }
+    #loader, .not-found { display: none; }
   }
 
   @media (max-width: 600px) {
@@ -89,8 +83,6 @@
 </head>
 <body>
 
-<button id="downloadPdf">Download PDF</button>
-
 <div class="certificate-container" id="certificate-container">
   <div id="loader">লোড হচ্ছে...</div>
 </div>
@@ -102,7 +94,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -112,13 +103,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const certificateContainer = document.getElementById('certificate-container');
     const loader = document.getElementById('loader');
     const notFound = document.getElementById('not-found');
-    const downloadBtn = document.getElementById('downloadPdf');
 
     if (!regNumber) {
         loader.style.display = 'none';
         notFound.style.display = 'block';
         notFound.querySelector('h2').textContent = 'কোনো রেজিস্ট্রেশন নম্বর পাওয়া যায়নি।';
-        downloadBtn.style.display = 'none';
         return;
     }
 
@@ -133,14 +122,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             certificateContainer.style.display = 'none';
             notFound.style.display = 'block';
-            downloadBtn.style.display = 'none';
         }
       })
       .catch(error => {
         console.error('Fetch Error:', error);
         loader.style.display = 'none';
         certificateContainer.innerHTML = '<p style="color: red; text-align: center;">সার্ভার থেকে ডাটা লোড করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</p>';
-        downloadBtn.style.display = 'none';
       });
 
     function displayCertificate(person) {
@@ -182,18 +169,6 @@ document.addEventListener('DOMContentLoaded', function() {
             height: 80
         });
     }
-
-    downloadBtn.addEventListener('click', function() {
-        const element = document.getElementById('certificate-container');
-        const opt = {
-            margin: 0.5,
-            filename: 'certificate.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, logging: false },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
-    });
 });
 </script>
 </body>
