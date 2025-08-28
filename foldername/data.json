@@ -1,30 +1,146 @@
-[
-  {
-    "registration_number": "test1",
-    "name": "মোঃ আরিফুল ইসলাম",
-    "designation": "সফটওয়্যার ইঞ্জিনিয়ার",
-    "company": "টেকনো সলিউশনস লিমিটেড",
-    "photo_url": "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/Picsart_24-02-27_15-44-12-967.jpg",
-    "logo_url": "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/GPI-AsiaTel-Logo-e1716128485650.png",
-    "details": {
-      "কোর্স নাম": "ওয়েব ডেভেলপমেন্ট",
-      "শুরুর তারিখ": "জানুয়ারী ১, ২০২৪",
-      "শেষের তারিখ": "জুন ৩০, ২০২৪",
-      "ফলাফল": "A+"
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>সার্টিফিকেট জেনারেটর</title>
+  <style>
+    body {
+      font-family: 'SolaimanLipi', sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
     }
-  },
-  {
-    "registration_number": "CERT1002",
-    "name": "ফারিয়া আহমেদ",
-    "designation": "গ্রাফিক ডিজাইনার",
-    "company": "ডিজাইন হাব",
-    "photo_url": "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/Picsart_24-02-27_15-44-12-967.jpg",
-    "logo_url": "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/GPI-AsiaTel-Logo-e1716128485650.png",
-    "details": {
-      "কোর্স নাম": "অ্যাডভান্সড গ্রাফিক ডিজাইন",
-      "শুরুর তারিখ": "ফেব্রুয়ারী ১, ২০২৪",
-      "শেষের তারিখ": "মে ৩১, ২০২৪",
-      "ফলাফল": "A"
+
+    .certificate {
+      width: 800px;
+      height: 600px;
+      background-color: #fff;
+      border: 5px solid #2c3e50;
+      padding: 30px;
+      margin-bottom: 40px;
+      position: relative;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
-  }
-]
+
+    .logo {
+      width: 150px;
+      position: absolute;
+      top: 20px;
+      left: 30px;
+    }
+
+    .photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      object-fit: cover;
+      border: 3px solid #2c3e50;
+    }
+
+    .title {
+      text-align: center;
+      margin-top: 100px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .subtitle {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 20px;
+      color: #34495e;
+    }
+
+    .details {
+      margin-top: 50px;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 30px;
+      width: calc(100% - 60px);
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+    }
+
+    .footer div {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div id="certificates-container"></div>
+
+<script>
+  const data = [
+    {
+      "registration_number": "test1",
+      "name": "মোঃ আরিফুল ইসলাম",
+      "designation": "সফটওয়্যার ইঞ্জিনিয়ার",
+      "company": "টেকনো সলিউশনস লিমিটেড",
+      "photo_url": "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/Picsart_24-02-27_15-44-12-967.jpg",
+      "logo_url": "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/GPI-AsiaTel-Logo-e1716128485650.png",
+      "details": {
+        "কোর্স নাম": "ওয়েব ডেভেলপমেন্ট",
+        "শুরুর তারিখ": "জানুয়ারী ১, ২০২৪",
+        "শেষের তারিখ": "জুন ৩০, ২০২৪",
+        "ফলাফল": "A+"
+      }
+    },
+    {
+      "registration_number": "CERT1002",
+      "name": "ফারিয়া আহমেদ",
+      "designation": "গ্রাফিক ডিজাইনার",
+      "company": "ডিজাইন হাব",
+      "photo_url": "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/Picsart_24-02-27_15-44-12-967.jpg",
+      "logo_url": "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/GPI-AsiaTel-Logo-e1716128485650.png",
+      "details": {
+        "কোর্স নাম": "অ্যাডভান্সড গ্রাফিক ডিজাইন",
+        "শুরুর তারিখ": "ফেব্রুয়ারী ১, ২০২৪",
+        "শেষের তারিখ": "মে ৩১, ২০২৪",
+        "ফলাফল": "A"
+      }
+    }
+  ];
+
+  const container = document.getElementById('certificates-container');
+
+  data.forEach(item => {
+    const cert = document.createElement('div');
+    cert.classList.add('certificate');
+
+    cert.innerHTML = `
+      <img src="${item.logo_url}" alt="Logo" class="logo">
+      <img src="${item.photo_url}" alt="Photo" class="photo">
+      <div class="title">সার্টিফিকেট অব কমপ্লিশন</div>
+      <div class="subtitle">${item.name} (${item.designation})</div>
+      <div class="details">
+        প্রতিষ্ঠান: ${item.company}<br>
+        কোর্স নাম: ${item.details["কোর্স নাম"]}<br>
+        শুরুর তারিখ: ${item.details["শুরুর তারিখ"]}<br>
+        শেষের তারিখ: ${item.details["শেষের তারিখ"]}<br>
+        ফলাফল: ${item.details["ফলাফল"]}<br>
+      </div>
+      <div class="footer">
+        <div>রেজিস্ট্রেশন #: ${item.registration_number}</div>
+        <div>স্বাক্ষর</div>
+      </div>
+    `;
+
+    container.appendChild(cert);
+  });
+</script>
+
+</body>
+</html>
