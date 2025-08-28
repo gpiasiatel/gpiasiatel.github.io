@@ -25,20 +25,25 @@
         /* Slider animation */
         @keyframes slide {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            100% { transform: translateX(-100%); }
         }
 
         .slider {
             display: flex;
             width: max-content;
-            animation: slide 20s linear infinite;
+            animation: slide 15s linear infinite;
         }
         .slider > div {
             flex-shrink: 0;
-            width: 18rem; /* w-48 */
-            height: 18rem; /* h-72 */
-            margin-right: 1.5rem; /* gap-6 */
+            width: 10rem; /* Adjusted for smaller client logos */
+            height: 6rem; /* Adjusted for logo proportions */
+            margin-right: 1rem;
             cursor: pointer;
+        }
+        .slider img {
+            object-fit: contain; /* Ensures logos/images fit without distortion */
+            width: 100%;
+            height: 100%;
         }
 
         /* Lightbox / Fullscreen image */
@@ -92,26 +97,15 @@
             document.getElementById("lightbox").style.display = "none";
         }
 
-        async function loadImages() {
-            const jsonUrl = "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/7photo/work%20images.json";
+        async function loadImages(containerId, jsonUrl, fallbackImages) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+
             try {
                 const res = await fetch(jsonUrl);
                 const data = await res.json();
 
-                const container = document.getElementById("imageGrid");
-                container.innerHTML = "";
-
                 const images = data.images && data.images.length > 0 ? data.images.slice(0, 7) : [];
-                const fallbackImages = [
-                    "https://via.placeholder.com/200x150?text=1",
-                    "https://via.placeholder.com/200x150?text=2",
-                    "https://via.placeholder.com/200x150?text=3",
-                    "https://via.placeholder.com/200x150?text=4",
-                    "https://via.placeholder.com/200x150?text=5",
-                    "https://via.placeholder.com/200x150?text=6",
-                    "https://via.placeholder.com/200x150?text=7"
-                ];
-
                 const finalImages = images.length ? images : fallbackImages;
 
                 // Duplicate images for infinite smooth effect
@@ -119,17 +113,54 @@
 
                 allImages.forEach((url, index) => {
                     const box = document.createElement("div");
-                    box.innerHTML = `<img src="${url}" alt="Image ${index+1}" class="object-cover w-full h-full rounded-lg shadow-md">`;
+                    box.innerHTML = `<img src="${url}" alt="Image ${index+1}" class="object-contain w-full h-full rounded-lg shadow-md">`;
                     box.addEventListener("click", () => openLightbox(url));
                     container.appendChild(box);
                 });
-
             } catch (error) {
-                console.error("Image load failed:", error);
+                console.error(`Image load failed for ${containerId}:`, error);
+                // Fallback to placeholder images if fetch fails
+                const allImages = fallbackImages.concat(fallbackImages);
+                allImages.forEach((url, index) => {
+                    const box = document.createElement("div");
+                    box.innerHTML = `<img src="${url}" alt="Image ${index+1}" class="object-contain w-full h-full rounded-lg shadow-md">`;
+                    box.addEventListener("click", () => openLightbox(url));
+                    container.appendChild(box);
+                });
             }
         }
 
-        window.onload = loadImages;
+        window.onload = function() {
+            // Load Our Works images from JSON
+            loadImages(
+                "imageGrid",
+                "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/7photo/work%20images.json",
+                [
+                    "https://via.placeholder.com/200x150?text=Work1",
+                    "https://via.placeholder.com/200x150?text=Work2",
+                    "https://via.placeholder.com/200x150?text=Work3",
+                    "https://via.placeholder.com/200x150?text=Work4",
+                    "https://via.placeholder.com/200x150?text=Work5",
+                    "https://via.placeholder.com/200x150?text=Work6",
+                    "https://via.placeholder.com/200x150?text=Work7"
+                ]
+            );
+
+            // Load Our Clients images from JSON
+            loadImages(
+                "clientGrid",
+                "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/7photo/claints%20imegs.json",
+                [
+                    "https://via.placeholder.com/200x150?text=Client1",
+                    "https://via.placeholder.com/200x150?text=Client2",
+                    "https://via.placeholder.com/200x150?text=Client3",
+                    "https://via.placeholder.com/200x150?text=Client4",
+                    "https://via.placeholder.com/200x150?text=Client5",
+                    "https://via.placeholder.com/200x150?text=Client6",
+                    "https://via.placeholder.com/200x150?text=Client7"
+                ]
+            );
+        };
     </script>
 </head>
 <body class="bg-gray-100">
@@ -203,16 +234,32 @@
             <p class="text-gray-500">Enter a registration number to see the result.</p>
         </div>
 
-        <!-- ✅ Smooth Continuous Infinite Slider -->
+        <!-- Our Works Slider -->
         <div class="mt-10">
-    <div class="flex justify-center">
-        <div class="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md text-center text-2xl font-bold">
-            Our Works
+            <div class="flex justify-center">
+                <div class="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md text-center text-2xl font-bold">
+                    Our Works
+                </div>
+            </div>
+            <div id="imageGridWrapper" class="overflow-hidden mt-10">
+                <div id="imageGrid" class="slider">
+                    <!-- Images will be injected here -->
+                </div>
+            </div>
         </div>
-    </div>
-        <div id="imageGridWrapper" class="overflow-hidden mt-10">
-            <div id="imageGrid" class="slider">
-                <!-- Images will be injected here -->
+
+        <!-- Our Clients Slider -->
+        <div class="mt-10">
+            <div class="flex justify-center">
+                <div class="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md text-center text-2xl font-bold">
+                    Our Clients
+                </div>
+            </div>
+            <div class="text-center text-gray-600 mb-4">Our clients worldwide:</div>
+            <div id="clientGridWrapper" class="overflow-hidden mt-2">
+                <div id="clientGrid" class="slider">
+                    <!-- Client images will be injected here -->
+                </div>
             </div>
         </div>
     </main>
