@@ -16,11 +16,30 @@
         .contact-btn { background-color: #009A00; transition: background-color 0.3s ease; }
         .contact-btn:hover { background-color: #007500; }
         .footer-bg { background-color: #222222; }
-        .search-btn { background-color: #009A00; }
+        .search-btn { background-color: #009A00; transition: background-color 0.3s ease; }
+        .search-btn:hover { background-color: #007500; }
         .nav-link { transition: color 0.3s ease; }
         .nav-link:hover { color: #009A00; }
         .footer-link:hover { color: #009A00; }
     </style>
+    <script>
+        function searchCertificate(event) {
+            event.preventDefault(); // ফর্ম সাবমিট হওয়া আটকায়
+            const regNumber = document.getElementById('searchInput').value.trim();
+            if (regNumber) {
+                // নতুন result.html পেজে reg প্যারামিটারসহ ইউজারকে পাঠাবে
+                window.location.href = `result.html?reg=${encodeURIComponent(regNumber)}`;
+            } else {
+                alert("দয়া করে একটি রেজিস্ট্রেশন নম্বর দিন!");
+            }
+        }
+
+        // সার্চ বাটন ক্লিক হ্যান্ডলার
+        function handleSearch() {
+            const fakeEvent = { preventDefault: () => {} }; // dummy event
+            searchCertificate(fakeEvent);
+        }
+    </script>
 </head>
 <body class="bg-gray-100">
 
@@ -40,7 +59,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                         <span>info@gpiasiatel.com.bd</span>
                     </div>
-                     <div class="hidden md:flex items-center space-x-1">
+                    <div class="hidden md:flex items-center space-x-1">
                         <!-- Clock Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         <span>Saturday-Thursday - 09:00AM - 06:00PM</span>
@@ -78,20 +97,20 @@
     <!-- Search Bar Section -->
     <div class="bg-white py-4 border-b">
         <div class="container mx-auto px-4">
-            <div class="max-w-3xl mx-auto flex items-center border-2 border-gray-300 rounded-md overflow-hidden">
+            <form onsubmit="searchCertificate(event)" class="max-w-3xl mx-auto flex items-center border-2 border-gray-300 rounded-md overflow-hidden">
                 <div class="px-3 py-2 bg-gray-100">
                     <select class="bg-transparent outline-none text-gray-600">
                         <option>Certificates</option>
                     </select>
                 </div>
-                <input id="searchInput" type="text" placeholder="Search Registration Number..." class="w-full p-2 outline-none">
-                <button onclick="handleSearch()" class="search-btn text-white p-2">
+                <input id="searchInput" type="text" placeholder="Search Registration Number..." class="w-full p-2 outline-none" required>
+                <button type="submit" class="search-btn text-white p-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                 </button>
-            </div>
+            </form>
         </div>
     </div>
-    
+
     <!-- Search Result Display Area -->
     <main class="container mx-auto px-4 py-8">
         <h2 class="text-2xl font-bold mb-4 text-center">Search Result</h2>
