@@ -1,149 +1,175 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <title>Certificate Viewer</title>
-  <style>
-    body {
-      font-family: "Bangla", sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>সার্টিফিকেট ফলাফল</title>
+<style>
+  body { font-family: 'SolaimanLipi', sans-serif; background: #f4f6f8; margin: 0; padding: 20px; text-align:center; }
+  a { color: #2980b9; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  #loader { text-align: center; padding: 50px; font-size: 20px; color: #555; }
+  .not-found { text-align: center; padding: 50px; color: #e74c3c; }
 
-    .certificate {
-      width: 800px;
-      margin: 30px auto;
-      padding: 30px;
-      background: #fff;
-      border: 2px solid #333;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
-    }
+  .certificate-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    overflow: hidden;
+    padding-bottom: 30px;
+    position: relative;
+  }
 
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+  .cert-header { background-color: #2c3e50; padding: 20px; text-align: center; }
+  .company-logo { max-height: 80px; object-fit: contain; }
+  .cert-body { display: flex; align-items: center; padding: 30px 20px; gap: 20px; flex-wrap: wrap; }
+  .profile-picture-container { flex: 0 0 150px; text-align: center; }
+  .profile-picture { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #2980b9; }
+  .person-info { flex: 1; text-align:left; }
+  .person-info .name { font-size: 28px; margin: 0; color: #2c3e50; }
+  .person-info .designation { font-size: 20px; margin: 5px 0; color: #2980b9; }
+  .person-info .company { font-size: 18px; color: #555; }
 
-    .header img.logo {
-      width: 120px;
-    }
+  .cert-details { margin: 20px; padding: 10px; }
+  .detail-item { padding: 10px 0; border-bottom: 1px dashed #bdc3c7; font-size: 16px; display:flex; justify-content:space-between; }
+  .detail-key { font-weight: bold; color: #34495e; }
+  .detail-value { color: #2c3e50; }
 
-    .profile {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-    }
+  .cert-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+    padding: 10px 20px;
+    color: #7f8c8d;
+    font-size: 14px;
+    position: relative;
+    z-index: 1;
+  }
+  .qr-code { width: 80px; height: 80px; }
+  .reg-number { font-weight: bold; font-size: 16px; color: #2c3e50; }
 
-    .profile img {
-      width: 120px;
-      height: 120px;
-      border-radius: 10px;
-      border: 2px solid #333;
-      margin-right: 20px;
+  @media print {
+    body { background-color: #fff; }
+    .certificate-container { box-shadow: none; margin: 0; }
+    .certificate-container::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 400px;
+      height: 400px;
+      transform: translate(-50%, -50%);
+      background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.1;
+      z-index: 0;
     }
+    .certificate-container > * { position: relative; z-index: 1; }
+    #loader, .not-found { display: none; }
+  }
 
-    .info {
-      flex: 1;
-    }
-
-    .info h2 {
-      margin: 0;
-      font-size: 22px;
-    }
-
-    .info p {
-      margin: 5px 0;
-      font-size: 16px;
-    }
-
-    .details {
-      margin-top: 20px;
-    }
-
-    .details .row {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-    }
-
-    .qr {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .qr img {
-      width: 120px;
-      height: 120px;
-    }
-
-    .actions {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .actions button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    /* Print এর সময় ওয়াটারমার্ক */
-    @media print {
-      body {
-        position: relative;
-      }
-      body::before {
-        content: "";
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        width: 500px;
-        height: 500px;
-        background: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png') no-repeat center center;
-        background-size: contain;
-        opacity: 0.1; /* হালকা */
-        transform: translate(-50%, -50%);
-        z-index: -1;
-      }
-    }
-  </style>
+  @media (max-width: 600px) {
+    .cert-body { flex-direction: column; align-items: center; text-align: center; }
+    .person-info { flex: none; }
+    .cert-footer { flex-direction: column; gap: 10px; align-items: center; }
+    .detail-item { flex-direction: column; text-align:center; }
+  }
+</style>
 </head>
 <body>
 
-  <div class="certificate" id="certificate">
-    <div class="header">
-      <img class="logo" src="https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/GPI-AsiaTel-Logo-e1716128485650.png" alt="Logo">
-      <h1>সার্টিফিকেট</h1>
-    </div>
+<div class="certificate-container" id="certificate-container">
+  <div id="loader">লোড হচ্ছে...</div>
+</div>
 
-    <div class="profile">
-      <img id="photo" src="https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/Picsart_24-02-27_15-44-12-967.jpg" alt="Profile Photo">
-      <div class="info">
-        <h2 id="name">মোঃ আরিফুল ইসলাম</h2>
-        <p id="designation">সফটওয়্যার ইঞ্জিনিয়ার</p>
-        <p id="company">টেকনো সলিউশনস লিমিটেড</p>
-      </div>
-    </div>
+<div id="not-found" class="not-found" style="display: none;">
+  <h2>দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।</h2>
+  <p>আপনার দেওয়া রেজিস্ট্রেশন নম্বরটি সঠিক নয়। অনুগ্রহ করে আবার চেষ্টা করুন।</p>
+  <a href="index.html">সার্চ পেজে ফিরে যান</a>
+</div>
 
-    <div class="details">
-      <div class="row"><strong>কোর্স নাম:</strong> <span id="course">ওয়েব ডেভেলপমেন্ট</span></div>
-      <div class="row"><strong>শুরুর তারিখ:</strong> <span id="start">জানুয়ারী ১, ২০২৪</span></div>
-      <div class="row"><strong>শেষের তারিখ:</strong> <span id="end">জুন ৩০, ২০২৪</span></div>
-      <div class="row"><strong>ফলাফল:</strong> <span id="result">A+</span></div>
-    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <div class="qr">
-      <img id="qrcode" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://gpiasiatel.com/certificate/test1" alt="QR Code">
-      <p>অনলাইনে যাচাই করতে QR স্ক্যান করুন</p>
-    </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const GITHUB_DATA_URL = 'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/refs/heads/main/foldername/data.json';
+    const urlParams = new URLSearchParams(window.location.search);
+    const regNumber = urlParams.get('reg');
+    const certificateContainer = document.getElementById('certificate-container');
+    const loader = document.getElementById('loader');
+    const notFound = document.getElementById('not-found');
 
-    <div class="actions">
-      <button onclick="window.print()">প্রিন্ট / PDF</button>
-    </div>
-  </div>
+    if (!regNumber) {
+        loader.style.display = 'none';
+        notFound.style.display = 'block';
+        notFound.querySelector('h2').textContent = 'কোনো রেজিস্ট্রেশন নম্বর পাওয়া যায়নি।';
+        return;
+    }
 
+    fetch(GITHUB_DATA_URL)
+      .then(response => response.json())
+      .then(data => {
+        const person = data.find(item => item.registration_number.toLowerCase() === regNumber.toLowerCase());
+        loader.style.display = 'none';
+
+        if (person) {
+            displayCertificate(person);
+        } else {
+            certificateContainer.style.display = 'none';
+            notFound.style.display = 'block';
+        }
+      })
+      .catch(error => {
+        console.error('Fetch Error:', error);
+        loader.style.display = 'none';
+        certificateContainer.innerHTML = '<p style="color: red; text-align: center;">সার্ভার থেকে ডাটা লোড করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</p>';
+      });
+
+    function displayCertificate(person) {
+        let detailsHtml = '';
+        for (const key in person.details) {
+            detailsHtml += `
+              <div class="detail-item">
+                <span class="detail-key">${key}</span>
+                <span class="detail-value">${person.details[key]}</span>
+              </div>`;
+        }
+
+        certificateContainer.innerHTML = `
+          <header class="cert-header">
+            <img src="${person.logo_url}?raw=true" alt="Company Logo" class="company-logo">
+          </header>
+          <main class="cert-body">
+            <div class="profile-picture-container">
+              <img src="${person.photo_url}?raw=true" alt="Profile Photo" class="profile-picture">
+            </div>
+            <div class="person-info">
+              <h1 class="name">${person.name}</h1>
+              <p class="designation">${person.designation}</p>
+              <p class="company">${person.company}</p>
+            </div>
+          </main>
+          <section class="cert-details">
+            ${detailsHtml}
+          </section>
+          <footer class="cert-footer">
+            <div class="reg-number">রেজিস্ট্রেশন নম্বর: ${person.registration_number}</div>
+            <div id="qrcode" class="qr-code"></div>
+          </footer>
+        `;
+
+        new QRCode(document.getElementById("qrcode"), {
+            text: window.location.href,
+            width: 80,
+            height: 80
+        });
+    }
+});
+</script>
 </body>
 </html>
