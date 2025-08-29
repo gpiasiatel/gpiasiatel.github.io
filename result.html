@@ -155,7 +155,13 @@ function displayCertificate(person, lang, targetElement){
       </footer>
     `;
     // QR কোড দেখানোর জন্য
-    new QRCode(targetElement.querySelector(".qr-code"), { text: window.location.href, width: 80, height: 80 });
+    // QR কোড রেন্ডার করার আগে নিশ্চিত করুন যে div বিদ্যমান
+    const qrCodeElement = targetElement.querySelector(".qr-code");
+    if (qrCodeElement) {
+        // QR কোড ক্লিয়ার করে নতুন করে তৈরি করা
+        qrCodeElement.innerHTML = ''; 
+        new QRCode(qrCodeElement, { text: window.location.href, width: 80, height: 80 });
+    }
 }
 
 // নতুন PDF জেনারেট করার ফাংশন
@@ -175,7 +181,7 @@ async function generateMultiLanguagePdf() {
 
         // একটি অস্থায়ী কন্টেইনার তৈরি করা হচ্ছে যা স্ক্রিনে দেখা যাবে না
         const tempContainer = document.createElement('div');
-        tempContainer.className = 'certificate-container';
+        tempContainer.className = 'certificate-container'; // CSS ক্লাস যোগ করা
         tempContainer.style.position = 'absolute';
         tempContainer.style.left = '-9999px';
         tempContainer.style.top = '0';
@@ -197,9 +203,41 @@ async function generateMultiLanguagePdf() {
         // একটি নির্দিষ্ট ক্যানভাসকে PDF এ যোগ করার ফাংশন
         const addCanvasToPdf = async (person, lang) => {
             displayCertificate(person, lang, tempContainer);
-            await new Promise(resolve => setTimeout(resolve, 200)); // রেন্ডার হওয়ার জন্য অল্প সময় দেওয়া
             
-            const canvas = await html2canvas(tempContainer, { scale: 2 });
+            // সকল ছবি লোড হওয়ার জন্য অপেক্ষা করা
+            await new Promise(resolve => {
+                const images = tempContainer.querySelectorAll('img');
+                let imagesLoaded = 0;
+                if (images.length === 0) {
+                    resolve();
+                    return;
+                }
+                images.forEach(img => {
+                    if (img.complete) {
+                        imagesLoaded++;
+                    } else {
+                        img.onload = () => {
+                            imagesLoaded++;
+                            if (imagesLoaded === images.length) resolve();
+                        };
+                        img.onerror = () => {
+                            console.warn(`Failed to load image: ${img.src}`);
+                            imagesLoaded++;
+                            if (imagesLoaded === images.length) resolve();
+                        };
+                    }
+                });
+                if (imagesLoaded === images.length) resolve(); // যদি সব ছবি ক্যাশে থাকে
+            });
+            
+            // রেন্ডার হওয়ার জন্য অল্প সময় দেওয়া
+            await new Promise(resolve => setTimeout(resolve, 300)); 
+            
+            const canvas = await html2canvas(tempContainer, { 
+                scale: 2, 
+                useCORS: true, // CORS সক্ষম করার চেষ্টা
+                allowTaint: true // একই-অরিজিন না হওয়া ছবিগুলোকে "নোংরা" হিসেবে চিহ্নিত করার অনুমতি দেয়
+            });
             const imgData = canvas.toDataURL('image/png');
             
             const imgProps = pdf.getImageProperties(imgData);
