@@ -12,230 +12,75 @@
     padding: 20px; 
     text-align:center; 
   }
-  a { color: #2980b9; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  #loader { text-align: center; padding: 50px; font-size: 20px; color: #555; }
-  .not-found { text-align: center; padding: 50px; color: #e74c3c; }
-
-  .certificate-container {
+  a { 
+    color: #2980b9; 
+    text-decoration: none; 
+  }
+  .certificate {
+    position: relative;
+    width: 100%;
     max-width: 900px;
     margin: 0 auto;
+    padding: 50px;
     background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    overflow: hidden;
-    padding-bottom: 30px;
-    position: relative;
-  }
-
-  /* 🔹 Watermark */
-  .certificate-container::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 450px;
-    height: 450px;
-    transform: translate(-50%, -50%);
-    background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
+    border: 8px solid #2c3e50;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    background-image: url('https://i.ibb.co/LPqtvxK/sample-watermark.png'); /* ✅ এখানে তোমার watermark link দাও */
     background-repeat: no-repeat;
     background-position: center;
-    background-size: contain;
-    opacity: 0.12;
-    z-index: 0;
-    pointer-events: none;
+    background-size: 60%;
   }
-
-  .certificate-container > * {
-    position: relative;
-    z-index: 1;
+  .certificate h1 {
+    font-size: 38px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 3px;
   }
-
-  .cert-header { background-color: #2c3e50; padding: 20px; text-align: center; }
-  .company-logo { max-height: 80px; object-fit: contain; }
-
-  .cert-body { display: flex; align-items: center; padding: 30px 20px; gap: 20px; flex-wrap: wrap; }
-  .profile-picture-container { flex: 0 0 150px; text-align: center; }
-  .profile-picture { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #2980b9; }
-
-  .person-info { flex: 1; text-align: center; margin-top: 20px; }
-
-  /* 🔹 নাম বড় Box এর মধ্যে */
+  .person-info {
+    margin-top: 40px;
+    text-align: center;
+  }
+  /* 🔹 নাম classy box */
   .person-info .name-box {
     border: 3px solid #2980b9;
-    padding: 15px 30px;
+    padding: 15px 40px;
     display: inline-block;
-    border-radius: 12px;
-    font-size: 30px;
+    border-radius: 16px;
+    font-size: 32px;
     font-weight: bold;
     color: #2c3e50;
-    background: rgba(255,255,255,0.95);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    margin-bottom: 12px;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    margin-bottom: 15px;
   }
-
-  .person-info .designation { 
-    font-size: 20px; 
-    margin: 5px 0; 
-    color: #2980b9; 
-    background: rgba(255,255,255,0.85); 
-    display:inline-block; 
-    padding:3px 10px; 
-    border-radius:6px; 
+  .designation, .company {
+    font-size: 20px;
+    color: #34495e;
+    margin: 5px 0;
   }
-  .person-info .company { 
-    font-size: 18px; 
-    color: #555; 
-    background: rgba(255,255,255,0.85); 
-    display:inline-block; 
-    padding:3px 10px; 
-    border-radius:6px; 
-  }
-
-  .cert-details { margin: 20px; padding: 10px; }
-  .detail-item { 
-    padding: 10px 0; 
-    border-bottom: 1px dashed #bdc3c7; 
-    font-size: 16px; 
-    display:flex; 
-    justify-content:space-between; 
-    background: rgba(255,255,255,0.85); 
-    border-radius: 5px;
-    padding: 8px 12px;
-    margin-bottom: 8px;
-  }
-  .detail-key { font-weight: bold; color: #34495e; }
-  .detail-value { color: #2c3e50; }
-
-  .cert-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px;
-    padding: 10px 20px;
-    color: #7f8c8d;
+  .footer {
+    margin-top: 60px;
     font-size: 14px;
-  }
-  .qr-code { width: 80px; height: 80px; }
-  .reg-number { 
-    font-weight: bold; 
-    font-size: 16px; 
-    color: #2c3e50; 
-    background: rgba(255,255,255,0.85); 
-    padding: 5px 12px; 
-    border-radius: 8px; 
-  }
-
-  @media print {
-    body { background-color: #fff; }
-    .certificate-container { box-shadow: none; margin: 0; }
-    #loader, .not-found { display: none; }
-  }
-
-  @media (max-width: 600px) {
-    .cert-body { flex-direction: column; align-items: center; text-align: center; }
-    .person-info { text-align: center; }
-    .cert-footer { flex-direction: column; gap: 10px; align-items: center; }
-    .detail-item { flex-direction: column; text-align:center; }
+    color: #7f8c8d;
   }
 </style>
 </head>
 <body>
 
-<div class="certificate-container" id="certificate-container">
-  <div id="loader">লোড হচ্ছে...</div>
+<div class="certificate">
+  <h1>কর্মী সার্টিফিকেট</h1>
+  <div class="person-info">
+    <div class="name-box">মোঃ আরিফুল ইসলাম</div>
+    <p class="designation">সফটওয়্যার ইঞ্জিনিয়ার</p>
+    <p class="company">টেকনো সলিউশনস লিমিটেড</p>
+  </div>
+  <div class="footer">
+    © 2025 GPI AsiaTel. সর্বস্বত্ব সংরক্ষিত।
+  </div>
 </div>
 
-<div id="not-found" class="not-found" style="display: none;">
-  <h2>দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।</h2>
-  <p>আপনার দেওয়া রেজিস্ট্রেশন নম্বরটি সঠিক নয়। অনুগ্রহ করে আবার চেষ্টা করুন।</p>
-  <a href="index.html">সার্চ পেজে ফিরে যান</a>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const GITHUB_DATA_URL = 'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/data.json';
-    const urlParams = new URLSearchParams(window.location.search);
-    const regNumber = urlParams.get('reg');
-    const certificateContainer = document.getElementById('certificate-container');
-    const loader = document.getElementById('loader');
-    const notFound = document.getElementById('not-found');
-
-    if (!regNumber) {
-        loader.style.display = 'none';
-        notFound.style.display = 'block';
-        notFound.querySelector('h2').textContent = 'কোনো রেজিস্ট্রেশন নম্বর পাওয়া যায়নি।';
-        return;
-    }
-
-    fetch(GITHUB_DATA_URL)
-      .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-      })
-      .then(data => {
-        const person = data.find(item => item.registration_number && item.registration_number.toLowerCase() === regNumber.toLowerCase());
-        loader.style.display = 'none';
-
-        if (person) {
-            displayCertificate(person);
-        } else {
-            certificateContainer.style.display = 'none';
-            notFound.style.display = 'block';
-        }
-      })
-      .catch(error => {
-        console.error('Fetch Error:', error);
-        loader.style.display = 'none';
-        certificateContainer.innerHTML = '<p style="color: red; text-align: center;">সার্ভার থেকে ডাটা লোড করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</p>';
-      });
-
-    function displayCertificate(person) {
-        let detailsHtml = '';
-        if (person.details) {
-            for (const key in person.details) {
-                detailsHtml += `
-                  <div class="detail-item">
-                    <span class="detail-key">${key}</span>
-                    <span class="detail-value">${person.details[key]}</span>
-                  </div>`;
-            }
-        }
-
-        certificateContainer.innerHTML = `
-          <header class="cert-header">
-            <img src="${person.logo_url || ''}?raw=true" alt="Company Logo" class="company-logo" onerror="this.style.display='none'">
-          </header>
-          <main class="cert-body">
-            <div class="profile-picture-container">
-              <img src="${person.photo_url || ''}?raw=true" alt="Profile Photo" class="profile-picture" onerror="this.style.display='none'">
-            </div>
-            <div class="person-info">
-              <div class="name-box">${person.name || 'N/A'}</div>
-              <p class="designation">${person.designation || 'N/A'}</p>
-              <p class="company">${person.company || 'N/A'}</p>
-            </div>
-          </main>
-          <section class="cert-details">
-            ${detailsHtml}
-          </section>
-          <footer class="cert-footer">
-            <div class="reg-number">রেজিস্ট্রেশন নম্বর: ${person.registration_number || 'N/A'}</div>
-            <div id="qrcode" class="qr-code"></div>
-          </footer>
-        `;
-
-        new QRCode(document.getElementById("qrcode"), {
-            text: window.location.href,
-            width: 80,
-            height: 80
-        });
-    }
-});
-</script>
 </body>
 </html>
