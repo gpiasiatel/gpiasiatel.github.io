@@ -5,48 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>সার্টিফিকেট ফলাফল</title>
 <style>
-body { 
-  font-family: 'SolaimanLipi', sans-serif; 
-  background: #f4f6f8; 
-  margin: 0; 
-  padding: 20px; 
-  text-align:center; 
-}
+body { font-family: 'SolaimanLipi', sans-serif; background: #f4f6f8; margin: 0; padding: 20px; text-align:center; }
 a { color: #2980b9; text-decoration: none; }
 a:hover { text-decoration: underline; }
 #loader { text-align: center; padding: 50px; font-size: 20px; color: #555; }
 .not-found { text-align: center; padding: 50px; color: #e74c3c; }
 
-.certificate-container {
-  max-width: 900px;
-  margin: 0 auto;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
-  overflow: hidden;
-  padding-bottom: 40px;
-  position: relative;
-}
+.certificate-container { max-width: 900px; margin: 20px auto; background: #fff; border-radius: 15px; box-shadow: 0 12px 30px rgba(0,0,0,0.2); overflow: hidden; padding-bottom: 40px; position: relative; }
 
-/* Screen watermark */
 .certificate-container::before {
   content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 500px;
-  height: 500px;
+  position: absolute; top: 50%; left: 50%; width: 500px; height: 500px;
   transform: translate(-50%, -50%) rotate(-15deg);
   background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  opacity: 0.08;
-  filter: blur(1px);
-  z-index: 0;
+  background-repeat: no-repeat; background-position: center; background-size: contain;
+  opacity: 0.08; filter: blur(1px); z-index: 0;
 }
-
 .certificate-container > * { position: relative; z-index: 1; }
+
+.lang-toggle { text-align: right; margin-bottom: 10px; }
+.lang-toggle button { padding: 5px 12px; margin-left: 5px; cursor:pointer; border-radius:5px; border:none; background:#2980b9; color:white; }
 
 .cert-header { background-color: #2c3e50; padding: 20px; text-align: center; }
 .company-logo { max-height: 80px; object-fit: contain; }
@@ -69,53 +47,53 @@ a:hover { text-decoration: underline; }
 .qr-code { width: 80px; height: 80px; }
 .reg-number { font-weight: bold; font-size: 16px; color: #2c3e50; }
 
-@media print {
-  body { background-color: #fff; }
-  .certificate-container { box-shadow: none; margin: 0; }
+@media print { body { background-color: #fff; } .certificate-container { box-shadow: none; margin: 0; } 
+.certificate-container::before { opacity: 0.05; } 
+#loader, .not-found { display: none; } }
 
-  /* Print-friendly watermark */
-  .certificate-container::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 500px;
-      height: 500px;
-      transform: translate(-50%, -50%) rotate(-15deg);
-      background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
-      opacity: 0.05; /* subtle but visible in print */
-      z-index: 0;
-  }
-
-  .certificate-container > * { position: relative; z-index: 1; }
-  #loader, .not-found { display: none; }
-}
-
-@media (max-width: 600px) {
-  .cert-body { flex-direction: column; align-items: center; text-align: center; }
-  .person-info { text-align: center; }
-  .cert-footer { flex-direction: column; gap: 10px; align-items: center; }
-  .detail-item { flex-direction: column; text-align:center; }
-}
+@media (max-width: 600px) { .cert-body { flex-direction: column; align-items: center; text-align: center; } .person-info { text-align: center; } .cert-footer { flex-direction: column; gap: 10px; align-items: center; } .detail-item { flex-direction: column; text-align:center; } }
 </style>
 </head>
 <body>
+
+<div class="lang-toggle">
+  <button onclick="setLanguage('bn')">বাংলা</button>
+  <button onclick="setLanguage('en')">English</button>
+</div>
 
 <div class="certificate-container" id="certificate-container">
   <div id="loader">লোড হচ্ছে...</div>
 </div>
 
 <div id="not-found" class="not-found" style="display: none;">
-  <h2>দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।</h2>
-  <p>আপনার দেওয়া রেজিস্ট্রেশন নম্বরটি সঠিক নয়। অনুগ্রহ করে আবার চেষ্টা করুন।</p>
-  <a href="index.html">সার্চ পেজে ফিরে যান</a>
+  <h2 id="nf-title">দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।</h2>
+  <p id="nf-msg">আপনার দেওয়া রেজিস্ট্রেশন নম্বরটি সঠিক নয়। অনুগ্রহ করে আবার চেষ্টা করুন।</p>
+  <a href="index.html" id="nf-link">সার্চ পেজে ফিরে যান</a>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
+let currentLang = 'bn';
+
+function setLanguage(lang) {
+    currentLang = lang;
+    // যদি ইতিমধ্যেই ডাটা লোড হয়ে থাকে, রেন্ডার করুন আবার
+    if(window.personData) displayCertificate(window.personData);
+    updateNotFoundText();
+}
+
+function updateNotFoundText(){
+    if(currentLang === 'bn'){
+        document.getElementById('nf-title').textContent = 'দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।';
+        document.getElementById('nf-msg').textContent = 'আপনার দেওয়া রেজিস্ট্রেশন নম্বরটি সঠিক নয়। অনুগ্রহ করে আবার চেষ্টা করুন।';
+        document.getElementById('nf-link').textContent = 'সার্চ পেজে ফিরে যান';
+    } else {
+        document.getElementById('nf-title').textContent = 'Sorry, no result found.';
+        document.getElementById('nf-msg').textContent = 'The registration number you entered is invalid. Please try again.';
+        document.getElementById('nf-link').textContent = 'Go back to search page';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const GITHUB_DATA_URL = 'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/data.json';
     const urlParams = new URLSearchParams(window.location.search);
@@ -127,34 +105,35 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!regNumber) {
         loader.style.display = 'none';
         notFound.style.display = 'block';
-        notFound.querySelector('h2').textContent = 'কোনো রেজিস্ট্রেশন নম্বর পাওয়া যায়নি।';
+        updateNotFoundText();
         return;
     }
 
     fetch(GITHUB_DATA_URL)
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
-        return response.json();
-      })
+      .then(response => { if (!response.ok) throw new Error('Network response was not ok'); return response.json(); })
       .then(data => {
         const person = data.find(item => item.registration_number && item.registration_number.toLowerCase() === regNumber.toLowerCase());
         loader.style.display = 'none';
-        if (person) displayCertificate(person);
-        else { certificateContainer.style.display = 'none'; notFound.style.display = 'block'; }
+        if (person) { 
+            window.personData = person; // save for language toggle
+            displayCertificate(person);
+        } else { certificateContainer.style.display = 'none'; notFound.style.display = 'block'; updateNotFoundText(); }
       })
-      .catch(error => {
-        console.error('Fetch Error:', error);
-        loader.style.display = 'none';
-        certificateContainer.innerHTML = '<p style="color: red; text-align: center;">সার্ভার থেকে ডাটা লোড করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</p>';
-      });
+      .catch(error => { console.error('Fetch Error:', error); loader.style.display = 'none'; certificateContainer.innerHTML = '<p style="color:red;text-align:center;">Data could not be loaded. Please try again.</p>'; });
 
     function displayCertificate(person) {
         let detailsHtml = '';
         if (person.details) {
             for (const key in person.details) {
-                detailsHtml += `<div class="detail-item"><span class="detail-key">${key}</span><span class="detail-value">${person.details[key]}</span></div>`;
+                let displayKey = key;
+                if(currentLang === 'en' && person.details_en && person.details_en[key]) displayKey = person.details_en[key];
+                detailsHtml += `<div class="detail-item"><span class="detail-key">${displayKey}</span><span class="detail-value">${person.details[key]}</span></div>`;
             }
         }
+
+        const name = (currentLang==='bn') ? person.name : (person.name_en || person.name);
+        const designation = (currentLang==='bn') ? person.designation : (person.designation_en || person.designation);
+        const company = (currentLang==='bn') ? person.company : (person.company_en || person.company);
 
         certificateContainer.innerHTML = `
           <header class="cert-header">
@@ -165,18 +144,17 @@ document.addEventListener('DOMContentLoaded', function() {
               <img src="${person.photo_url || ''}?raw=true" alt="Profile Photo" class="profile-picture" onerror="this.style.display='none'">
             </div>
             <div class="person-info">
-              <h1 class="name">${person.name || 'N/A'}</h1>
-              <p class="designation">${person.designation || 'N/A'}</p>
-              <p class="company">${person.company || 'N/A'}</p>
+              <h1 class="name">${name}</h1>
+              <p class="designation">${designation}</p>
+              <p class="company">${company}</p>
             </div>
           </main>
           <section class="cert-details">${detailsHtml}</section>
           <footer class="cert-footer">
-            <div class="reg-number">রেজিস্ট্রেশন নম্বর: ${person.registration_number || 'N/A'}</div>
+            <div class="reg-number">${currentLang==='bn'?'রেজিস্ট্রেশন নম্বর':'Registration No'}: ${person.registration_number || 'N/A'}</div>
             <div id="qrcode" class="qr-code"></div>
           </footer>
         `;
-
         new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 80, height: 80 });
     }
 });
