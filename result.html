@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>সার্টিফিকেট ফলাফল</title>
 <style>
-  body { font-family: 'SolaimanLipi', sans-serif; background: #f4f6f8; margin: 0; padding: 20px; text-align:center; }
+  body { 
+    font-family: 'SolaimanLipi', sans-serif; 
+    background: #f4f6f8; 
+    margin: 0; 
+    padding: 20px; 
+    text-align:center; 
+  }
   a { color: #2980b9; text-decoration: none; }
   a:hover { text-decoration: underline; }
   #loader { text-align: center; padding: 50px; font-size: 20px; color: #555; }
@@ -22,18 +28,62 @@
     position: relative;
   }
 
+  /* 🔹 Watermark সবসময় থাকবে */
+  .certificate-container::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 450px;
+    height: 450px;
+    transform: translate(-50%, -50%);
+    background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.12;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .certificate-container > * {
+    position: relative;
+    z-index: 1;
+  }
+
   .cert-header { background-color: #2c3e50; padding: 20px; text-align: center; }
   .company-logo { max-height: 80px; object-fit: contain; }
+
   .cert-body { display: flex; align-items: center; padding: 30px 20px; gap: 20px; flex-wrap: wrap; }
   .profile-picture-container { flex: 0 0 150px; text-align: center; }
   .profile-picture { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #2980b9; }
+
   .person-info { flex: 1; text-align:left; }
-  .person-info .name { font-size: 28px; margin: 0; color: #2c3e50; }
-  .person-info .designation { font-size: 20px; margin: 5px 0; color: #2980b9; }
-  .person-info .company { font-size: 18px; color: #555; }
+  .person-info .name { 
+    font-size: 28px; 
+    margin: 0; 
+    color: #2c3e50; 
+    border: 2px solid #2980b9; 
+    display: inline-block; 
+    padding: 8px 25px; 
+    border-radius: 10px; 
+    background: rgba(255,255,255,0.9); /* 🔹 নাম box এর মধ্যে clear হবে */
+  }
+  .person-info .designation { font-size: 20px; margin: 5px 0; color: #2980b9; background: rgba(255,255,255,0.8); display:inline-block; padding:2px 8px; border-radius:6px; }
+  .person-info .company { font-size: 18px; color: #555; background: rgba(255,255,255,0.8); display:inline-block; padding:2px 8px; border-radius:6px; }
 
   .cert-details { margin: 20px; padding: 10px; }
-  .detail-item { padding: 10px 0; border-bottom: 1px dashed #bdc3c7; font-size: 16px; display:flex; justify-content:space-between; }
+  .detail-item { 
+    padding: 10px 0; 
+    border-bottom: 1px dashed #bdc3c7; 
+    font-size: 16px; 
+    display:flex; 
+    justify-content:space-between; 
+    background: rgba(255,255,255,0.85); /* 🔹 watermark এর উপরেও লেখাগুলো readable */
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+  }
   .detail-key { font-weight: bold; color: #34495e; }
   .detail-value { color: #2c3e50; }
 
@@ -45,31 +95,20 @@
     padding: 10px 20px;
     color: #7f8c8d;
     font-size: 14px;
-    position: relative;
-    z-index: 1;
   }
   .qr-code { width: 80px; height: 80px; }
-  .reg-number { font-weight: bold; font-size: 16px; color: #2c3e50; }
+  .reg-number { 
+    font-weight: bold; 
+    font-size: 16px; 
+    color: #2c3e50; 
+    background: rgba(255,255,255,0.85); 
+    padding: 5px 12px; 
+    border-radius: 8px; 
+  }
 
   @media print {
     body { background-color: #fff; }
     .certificate-container { box-shadow: none; margin: 0; }
-    .certificate-container::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 400px;
-      height: 400px;
-      transform: translate(-50%, -50%);
-      background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
-      opacity: 0.1;
-      z-index: 0;
-    }
-    .certificate-container > * { position: relative; z-index: 1; }
     #loader, .not-found { display: none; }
   }
 
