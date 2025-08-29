@@ -12,17 +12,18 @@
     "পদবী": "সিনিয়র টেকনিশিয়ান",
     "কাজের ধরণ": "টেলিকম অপারেশন,মেনটেন্যান্স",
     "কোম্পানি নাম": "জিপিআই এশিয়া টেল",
+"প্রজেক্ট নাম": "বাংলালিংক-টাইগার ",
 "কর্মক্ষেত্রের ঠিকানা": "কক্সবাজার,চট্টগ্রাম",
 "শুরুর তারিখ": "১০ জানুয়ারি ২০১৭",
 "শেষের তারিখ": "চলমান"
     }
   },
   {
-    "registration_number": "test1",
+   "registration_number": "test",
     "name": "মোঃ হৃদয়",
     "designation": "সিনিয়র টেকনিশিয়ান ",
     "company": "জিপিআই এশিয়া টেল",
-    "photo_url": "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/Picsart_24-02-27_15-44-12-967.jpg",
+    "photo_url": "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/foldername/Data%20Photo/hridoy%20office%20photo.jpg",
     "logo_url": "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/GPI-AsiaTel-Logo-e1716128485650.png",
     "details": {
     "নাম": "মোঃ হৃদয়",
@@ -30,6 +31,7 @@
     "পদবী": "সিনিয়র টেকনিশিয়ান",
     "কাজের ধরণ": "টেলিকম অপারেশন,মেনটেন্যান্স",
     "কোম্পানি নাম": "জিপিআই এশিয়া টেল",
+"প্রজেক্ট নাম": "বাংলালিংক-টাইগার ",
 "কর্মক্ষেত্রের ঠিকানা": "কক্সবাজার,চট্টগ্রাম",
 "শুরুর তারিখ": "১০ জানুয়ারি ২০১৭",
 "শেষের তারিখ": "চলমান"
