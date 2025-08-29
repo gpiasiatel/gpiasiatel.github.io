@@ -28,7 +28,7 @@
     position: relative;
   }
 
-  /* 🔹 Watermark সবসময় থাকবে */
+  /* 🔹 Watermark */
   .certificate-container::before {
     content: "";
     position: absolute;
@@ -58,19 +58,39 @@
   .profile-picture-container { flex: 0 0 150px; text-align: center; }
   .profile-picture { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #2980b9; }
 
-  .person-info { flex: 1; text-align:left; }
-  .person-info .name { 
-    font-size: 28px; 
-    margin: 0; 
-    color: #2c3e50; 
-    border: 2px solid #2980b9; 
-    display: inline-block; 
-    padding: 8px 25px; 
-    border-radius: 10px; 
-    background: rgba(255,255,255,0.9); /* 🔹 নাম box এর মধ্যে clear হবে */
+  .person-info { flex: 1; text-align: center; margin-top: 20px; }
+
+  /* 🔹 নাম বড় Box এর মধ্যে */
+  .person-info .name-box {
+    border: 3px solid #2980b9;
+    padding: 15px 30px;
+    display: inline-block;
+    border-radius: 12px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #2c3e50;
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 12px;
   }
-  .person-info .designation { font-size: 20px; margin: 5px 0; color: #2980b9; background: rgba(255,255,255,0.8); display:inline-block; padding:2px 8px; border-radius:6px; }
-  .person-info .company { font-size: 18px; color: #555; background: rgba(255,255,255,0.8); display:inline-block; padding:2px 8px; border-radius:6px; }
+
+  .person-info .designation { 
+    font-size: 20px; 
+    margin: 5px 0; 
+    color: #2980b9; 
+    background: rgba(255,255,255,0.85); 
+    display:inline-block; 
+    padding:3px 10px; 
+    border-radius:6px; 
+  }
+  .person-info .company { 
+    font-size: 18px; 
+    color: #555; 
+    background: rgba(255,255,255,0.85); 
+    display:inline-block; 
+    padding:3px 10px; 
+    border-radius:6px; 
+  }
 
   .cert-details { margin: 20px; padding: 10px; }
   .detail-item { 
@@ -79,7 +99,7 @@
     font-size: 16px; 
     display:flex; 
     justify-content:space-between; 
-    background: rgba(255,255,255,0.85); /* 🔹 watermark এর উপরেও লেখাগুলো readable */
+    background: rgba(255,255,255,0.85); 
     border-radius: 5px;
     padding: 8px 12px;
     margin-bottom: 8px;
@@ -195,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
               <img src="${person.photo_url || ''}?raw=true" alt="Profile Photo" class="profile-picture" onerror="this.style.display='none'">
             </div>
             <div class="person-info">
-              <h1 class="name">${person.name || 'N/A'}</h1>
+              <div class="name-box">${person.name || 'N/A'}</div>
               <p class="designation">${person.designation || 'N/A'}</p>
               <p class="company">${person.company || 'N/A'}</p>
             </div>
