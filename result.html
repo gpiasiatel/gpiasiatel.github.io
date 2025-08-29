@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>সার্টিফিকেট ফলাফল</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <style>
 /* ---- পূর্বের CSS একই থাকবে ---- */
 body { font-family: 'SolaimanLipi', sans-serif; background: #f4f6f8; margin: 0; padding: 20px; text-align:center; }
@@ -21,8 +26,9 @@ a:hover { text-decoration: underline; }
   opacity: 0.08; filter: blur(1px); z-index: 0;
 }
 .certificate-container > * { position: relative; z-index: 1; }
-.lang-toggle { text-align: right; margin-bottom: 10px; }
+.lang-toggle { text-align: right; margin-bottom: 10px; max-width: 900px; margin-left: auto; margin-right: auto; }
 .lang-toggle button { padding: 5px 12px; margin-left: 5px; cursor:pointer; border-radius:5px; border:none; background:#2980b9; color:white; }
+.lang-toggle button:disabled { background: #555; cursor: not-allowed; }
 
 .cert-header { background-color: #2c3e50; padding: 20px; text-align: center; }
 .company-logo { max-height: 80px; object-fit: contain; }
@@ -41,8 +47,8 @@ a:hover { text-decoration: underline; }
 .qr-code { width: 80px; height: 80px; }
 .reg-number { font-weight: bold; font-size: 16px; color: #2c3e50; }
 
-@media print { body { background-color: #fff; } .certificate-container { box-shadow: none; margin: 0; } 
-.certificate-container::before { opacity: 0.05; } 
+@media print { body { background-color: #fff; } .certificate-container { box-shadow: none; margin: 0; }
+.certificate-container::before { opacity: 0.05; }
 #loader, .not-found { display: none; } }
 @media (max-width: 600px) { .cert-body { flex-direction: column; align-items: center; text-align: center; } .person-info { text-align: center; } .cert-footer { flex-direction: column; gap: 10px; align-items: center; } .detail-item { flex-direction: column; text-align:center; } }
 </style>
@@ -52,6 +58,7 @@ a:hover { text-decoration: underline; }
 <div class="lang-toggle">
   <button onclick="loadCertificate('bn')">বাংলা</button>
   <button onclick="loadCertificate('en')">English</button>
+  <button id="download-btn" onclick="generateMultiLanguagePdf()">ডাউনলোড PDF</button>
 </div>
 
 <div class="certificate-container" id="certificate-container">
@@ -64,18 +71,19 @@ a:hover { text-decoration: underline; }
   <a href="index.html" id="nf-link">সার্চ পেজে ফিরে যান</a>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-const dataFiles = { 'bn':'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/foldername/databangla.json',
-                    'en':'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/foldername/dataenglish.json' };
+const dataFiles = {
+    'bn':'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/foldername/databangla.json',
+    'en':'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/foldername/dataenglish.json'
+};
 
 let currentLang = 'bn';
-let personData = null;
 const urlParams = new URLSearchParams(window.location.search);
 const regNumber = urlParams.get('reg');
 const certificateContainer = document.getElementById('certificate-container');
 const loader = document.getElementById('loader');
 const notFound = document.getElementById('not-found');
+const downloadBtn = document.getElementById('download-btn');
 
 function updateNotFoundText(){
     if(currentLang === 'bn'){
@@ -92,8 +100,9 @@ function updateNotFoundText(){
 function loadCertificate(lang){
     currentLang = lang;
     loader.style.display = 'block';
+    downloadBtn.style.display = 'none'; // লোড হওয়ার সময় বাটন হাইড
     certificateContainer.style.display = 'block';
-    certificateContainer.innerHTML = '<div id="loader">লোড হচ্ছে...</div>';
+    certificateContainer.innerHTML = `<div id="loader">${lang === 'bn' ? 'লোড হচ্ছে...' : 'Loading...'}</div>`;
     notFound.style.display = 'none';
 
     fetch(dataFiles[lang])
@@ -102,8 +111,8 @@ function loadCertificate(lang){
           const person = data.find(item => item.registration_number && item.registration_number.toLowerCase() === regNumber.toLowerCase());
           loader.style.display = 'none';
           if(person){
-              personData = person;
-              displayCertificate(person);
+              displayCertificate(person, lang, certificateContainer);
+              downloadBtn.style.display = 'inline-block'; // ডেটা পাওয়া গেলে বাটন দেখানো হবে
           } else {
               certificateContainer.style.display = 'none';
               notFound.style.display = 'block';
@@ -117,14 +126,15 @@ function loadCertificate(lang){
       });
 }
 
-function displayCertificate(person){
+// এই ফাংশনটি এখন একটি নির্দিষ্ট জায়গায় সার্টিফিকেট রেন্ডার করার জন্য প্রস্তুত
+function displayCertificate(person, lang, targetElement){
     let detailsHtml = '';
     if(person.details){
         for(const key in person.details){
             detailsHtml += `<div class="detail-item"><span class="detail-key">${key}</span><span class="detail-value">${person.details[key]}</span></div>`;
         }
     }
-    certificateContainer.innerHTML = `
+    targetElement.innerHTML = `
       <header class="cert-header">
         <img src="${person.logo_url || ''}?raw=true" alt="Company Logo" class="company-logo" onerror="this.style.display='none'">
       </header>
@@ -140,16 +150,100 @@ function displayCertificate(person){
       </main>
       <section class="cert-details">${detailsHtml}</section>
       <footer class="cert-footer">
-        <div class="reg-number">${currentLang==='bn'?'রেজিস্ট্রেশন নম্বর':'Registration No'}: ${person.registration_number || 'N/A'}</div>
-        <div id="qrcode" class="qr-code"></div>
+        <div class="reg-number">${lang === 'bn' ? 'রেজিস্ট্রেশন নম্বর' : 'Registration No'}: ${person.registration_number || 'N/A'}</div>
+        <div class="qr-code"></div>
       </footer>
     `;
-    new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 80, height: 80 });
+    // QR কোড দেখানোর জন্য
+    new QRCode(targetElement.querySelector(".qr-code"), { text: window.location.href, width: 80, height: 80 });
 }
 
-// ডিফল্টে বাংলা লোড করুন
-if(regNumber) loadCertificate('bn');
-else { loader.style.display = 'none'; notFound.style.display = 'block'; updateNotFoundText(); }
+// নতুন PDF জেনারেট করার ফাংশন
+async function generateMultiLanguagePdf() {
+    if (!regNumber) {
+        alert('No registration number found.');
+        return;
+    }
+
+    const originalBtnText = downloadBtn.innerHTML;
+    downloadBtn.disabled = true;
+    downloadBtn.innerHTML = 'প্রসেসিং...';
+
+    try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+
+        // একটি অস্থায়ী কন্টেইনার তৈরি করা হচ্ছে যা স্ক্রিনে দেখা যাবে না
+        const tempContainer = document.createElement('div');
+        tempContainer.className = 'certificate-container';
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px';
+        tempContainer.style.top = '0';
+        tempContainer.style.width = '900px'; // একটি নির্দিষ্ট প্রস্থ দেওয়া হচ্ছে
+        document.body.appendChild(tempContainer);
+
+        // উভয় ভাষার ডেটা আনা হচ্ছে
+        const [bnResponse, enResponse] = await Promise.all([
+            fetch(dataFiles['bn']),
+            fetch(dataFiles['en'])
+        ]);
+        const bnData = await bnResponse.json();
+        const enData = await enResponse.json();
+        const bnPerson = bnData.find(item => item.registration_number.toLowerCase() === regNumber.toLowerCase());
+        const enPerson = enData.find(item => item.registration_number.toLowerCase() === regNumber.toLowerCase());
+
+        if (!bnPerson || !enPerson) throw new Error('Data not found for one or both languages.');
+
+        // একটি নির্দিষ্ট ক্যানভাসকে PDF এ যোগ করার ফাংশন
+        const addCanvasToPdf = async (person, lang) => {
+            displayCertificate(person, lang, tempContainer);
+            await new Promise(resolve => setTimeout(resolve, 200)); // রেন্ডার হওয়ার জন্য অল্প সময় দেওয়া
+            
+            const canvas = await html2canvas(tempContainer, { scale: 2 });
+            const imgData = canvas.toDataURL('image/png');
+            
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const ratio = imgProps.width / imgProps.height;
+            let imgHeight = pdfWidth / ratio;
+            
+            if (imgHeight > pdfHeight) {
+                imgHeight = pdfHeight;
+            }
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
+        };
+        
+        // প্রথমে বাংলা, তারপর ইংরেজি সার্টিফিকেট PDF এ যোগ করা হচ্ছে
+        await addCanvasToPdf(bnPerson, 'bn');
+        pdf.addPage();
+        await addCanvasToPdf(enPerson, 'en');
+        
+        // PDF সেভ করা হচ্ছে
+        pdf.save(`Certificate-${regNumber}.pdf`);
+
+        // অস্থায়ী কন্টেইনার মুছে ফেলা হচ্ছে
+        document.body.removeChild(tempContainer);
+
+    } catch (error) {
+        console.error('PDF Generation Failed:', error);
+        alert('দুঃখিত, PDF তৈরি করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।');
+    } finally {
+        // বাটনের লেখা আগের অবস্থায় ফিরিয়ে আনা হচ্ছে
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = originalBtnText;
+    }
+}
+
+// ডিফল্ট লোড
+if (regNumber) {
+    loadCertificate('bn');
+} else {
+    loader.style.display = 'none';
+    downloadBtn.style.display = 'none';
+    notFound.style.display = 'block';
+    updateNotFoundText();
+}
 </script>
 </body>
 </html>
