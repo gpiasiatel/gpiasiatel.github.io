@@ -10,7 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
-/* ---- পূর্বের CSS একই থাকবে ---- */
+/* Existing styles */
 body { font-family: 'SolaimanLipi', sans-serif; background: #f4f6f8; margin: 0; padding: 20px; text-align:center; }
 a { color: #2980b9; text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -47,13 +47,42 @@ a:hover { text-decoration: underline; }
 .qr-code { width: 80px; height: 80px; }
 .reg-number { font-weight: bold; font-size: 16px; color: #2c3e50; }
 
-@media print { body { background-color: #fff; } .certificate-container { box-shadow: none; margin: 0; }
-.certificate-container::before { opacity: 0.05; }
-#loader, .not-found { display: none; } }
-@media (max-width: 600px) { .cert-body { flex-direction: column; align-items: center; text-align: center; } .person-info { text-align: center; } .cert-footer { flex-direction: column; gap: 10px; align-items: center; } .detail-item { flex-direction: column; text-align:center; } }
+/* New style for Back button */
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 5px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  background: #2980b9;
+  color: white;
+  font-size: 16px;
+  z-index: 1000;
+}
+.back-button:hover {
+  background: #1f6391;
+}
+
+@media print { 
+  body { background-color: #fff; } 
+  .certificate-container { box-shadow: none; margin: 0; }
+  .certificate-container::before { opacity: 0.05; }
+  #loader, .not-found, .back-button { display: none; } 
+}
+@media (max-width: 600px) { 
+  .cert-body { flex-direction: column; align-items: center; text-align: center; } 
+  .person-info { text-align: center; } 
+  .cert-footer { flex-direction: column; gap: 10px; align-items: center; } 
+  .detail-item { flex-direction: column; text-align:center; } 
+}
 </style>
 </head>
 <body>
+
+<!-- Back Button -->
+<button class="back-button" onclick="window.location.href='index.html'">Home Page</button>
 
 <div class="lang-toggle">
   <button onclick="loadCertificate('bn')">বাংলা</button>
@@ -73,8 +102,8 @@ a:hover { text-decoration: underline; }
 
 <script>
 const dataFiles = {
-    'bn':'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/foldername/databangla.json',
-    'en':'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/foldername/dataenglish.json'
+    'bn': 'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/foldername/databangla.json',
+    'en': 'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/foldername/dataenglish.json'
 };
 
 let currentLang = 'bn';
@@ -85,8 +114,8 @@ const loader = document.getElementById('loader');
 const notFound = document.getElementById('not-found');
 const downloadBtn = document.getElementById('download-btn');
 
-function updateNotFoundText(){
-    if(currentLang === 'bn'){
+function updateNotFoundText() {
+    if (currentLang === 'bn') {
         document.getElementById('nf-title').textContent = 'দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।';
         document.getElementById('nf-msg').textContent = 'আপনার দেওয়া রেজিস্ট্রেশন নম্বরটি সঠিক নয়। অনুগ্রহ করে আবার চেষ্টা করুন।';
         document.getElementById('nf-link').textContent = 'সার্চ পেজে ফিরে যান';
@@ -97,22 +126,22 @@ function updateNotFoundText(){
     }
 }
 
-function loadCertificate(lang){
+function loadCertificate(lang) {
     currentLang = lang;
     loader.style.display = 'block';
-    downloadBtn.style.display = 'none'; // লোড হওয়ার সময় বাটন হাইড
+    downloadBtn.style.display = 'none';
     certificateContainer.style.display = 'block';
     certificateContainer.innerHTML = `<div id="loader">${lang === 'bn' ? 'লোড হচ্ছে...' : 'Loading...'}</div>`;
     notFound.style.display = 'none';
 
     fetch(dataFiles[lang])
-      .then(response => { if(!response.ok) throw new Error('Network error'); return response.json(); })
+      .then(response => { if (!response.ok) throw new Error('Network error'); return response.json(); })
       .then(data => {
           const person = data.find(item => item.registration_number && item.registration_number.toLowerCase() === regNumber.toLowerCase());
           loader.style.display = 'none';
-          if(person){
+          if (person) {
               displayCertificate(person, lang, certificateContainer);
-              downloadBtn.style.display = 'inline-block'; // ডেটা পাওয়া গেলে বাটন দেখানো হবে
+              downloadBtn.style.display = 'inline-block';
           } else {
               certificateContainer.style.display = 'none';
               notFound.style.display = 'block';
@@ -126,11 +155,10 @@ function loadCertificate(lang){
       });
 }
 
-// এই ফাংশনটি এখন একটি নির্দিষ্ট জায়গায় সার্টিফিকেট রেন্ডার করার জন্য প্রস্তুত
-function displayCertificate(person, lang, targetElement){
+function displayCertificate(person, lang, targetElement) {
     let detailsHtml = '';
-    if(person.details){
-        for(const key in person.details){
+    if (person.details) {
+        for (const key in person.details) {
             detailsHtml += `<div class="detail-item"><span class="detail-key">${key}</span><span class="detail-value">${person.details[key]}</span></div>`;
         }
     }
@@ -154,17 +182,13 @@ function displayCertificate(person, lang, targetElement){
         <div class="qr-code"></div>
       </footer>
     `;
-    // QR কোড দেখানোর জন্য
-    // QR কোড রেন্ডার করার আগে নিশ্চিত করুন যে div বিদ্যমান
     const qrCodeElement = targetElement.querySelector(".qr-code");
     if (qrCodeElement) {
-        // QR কোড ক্লিয়ার করে নতুন করে তৈরি করা
-        qrCodeElement.innerHTML = ''; 
+        qrCodeElement.innerHTML = '';
         new QRCode(qrCodeElement, { text: window.location.href, width: 80, height: 80 });
     }
 }
 
-// নতুন PDF জেনারেট করার ফাংশন
 async function generateMultiLanguagePdf() {
     if (!regNumber) {
         alert('No registration number found.');
@@ -179,16 +203,14 @@ async function generateMultiLanguagePdf() {
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
 
-        // একটি অস্থায়ী কন্টেইনার তৈরি করা হচ্ছে যা স্ক্রিনে দেখা যাবে না
         const tempContainer = document.createElement('div');
-        tempContainer.className = 'certificate-container'; // CSS ক্লাস যোগ করা
+        tempContainer.className = 'certificate-container';
         tempContainer.style.position = 'absolute';
         tempContainer.style.left = '-9999px';
         tempContainer.style.top = '0';
-        tempContainer.style.width = '900px'; // একটি নির্দিষ্ট প্রস্থ দেওয়া হচ্ছে
+        tempContainer.style.width = '900px';
         document.body.appendChild(tempContainer);
 
-        // উভয় ভাষার ডেটা আনা হচ্ছে
         const [bnResponse, enResponse] = await Promise.all([
             fetch(dataFiles['bn']),
             fetch(dataFiles['en'])
@@ -200,11 +222,9 @@ async function generateMultiLanguagePdf() {
 
         if (!bnPerson || !enPerson) throw new Error('Data not found for one or both languages.');
 
-        // একটি নির্দিষ্ট ক্যানভাসকে PDF এ যোগ করার ফাংশন
         const addCanvasToPdf = async (person, lang) => {
             displayCertificate(person, lang, tempContainer);
             
-            // সকল ছবি লোড হওয়ার জন্য অপেক্ষা করা
             await new Promise(resolve => {
                 const images = tempContainer.querySelectorAll('img');
                 let imagesLoaded = 0;
@@ -227,16 +247,15 @@ async function generateMultiLanguagePdf() {
                         };
                     }
                 });
-                if (imagesLoaded === images.length) resolve(); // যদি সব ছবি ক্যাশে থাকে
+                if (imagesLoaded === images.length) resolve();
             });
             
-            // রেন্ডার হওয়ার জন্য অল্প সময় দেওয়া
-            await new Promise(resolve => setTimeout(resolve, 300)); 
+            await new Promise(resolve => setTimeout(resolve, 300));
             
             const canvas = await html2canvas(tempContainer, { 
                 scale: 2, 
-                useCORS: true, // CORS সক্ষম করার চেষ্টা
-                allowTaint: true // একই-অরিজিন না হওয়া ছবিগুলোকে "নোংরা" হিসেবে চিহ্নিত করার অনুমতি দেয়
+                useCORS: true,
+                allowTaint: true
             });
             const imgData = canvas.toDataURL('image/png');
             
@@ -252,28 +271,22 @@ async function generateMultiLanguagePdf() {
             pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
         };
         
-        // প্রথমে বাংলা, তারপর ইংরেজি সার্টিফিকেট PDF এ যোগ করা হচ্ছে
         await addCanvasToPdf(bnPerson, 'bn');
         pdf.addPage();
         await addCanvasToPdf(enPerson, 'en');
         
-        // PDF সেভ করা হচ্ছে
         pdf.save(`Certificate-${regNumber}.pdf`);
-
-        // অস্থায়ী কন্টেইনার মুছে ফেলা হচ্ছে
         document.body.removeChild(tempContainer);
 
     } catch (error) {
         console.error('PDF Generation Failed:', error);
         alert('দুঃখিত, PDF তৈরি করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।');
     } finally {
-        // বাটনের লেখা আগের অবস্থায় ফিরিয়ে আনা হচ্ছে
         downloadBtn.disabled = false;
         downloadBtn.innerHTML = originalBtnText;
     }
 }
 
-// ডিফল্ট লোড
 if (regNumber) {
     loadCertificate('bn');
 } else {
