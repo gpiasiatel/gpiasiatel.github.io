@@ -6,7 +6,6 @@
     <title>GPI AsiaTel &mdash; Satisfaction is the key</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/7photo/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,13 +14,12 @@
         .header-top-bg { background-color: #008000; }
         .contact-btn { background-color: #009A00; transition: background-color 0.3s ease; }
         .contact-btn:hover { background-color: #007500; }
-        .footer-bg { background-color: #008000; color: white; }
+        .footer-bg { background-color: #008000; }
         .search-btn { background-color: #009A00; transition: background-color 0.3s ease; }
         .search-btn:hover { background-color: #007500; }
         .nav-link { transition: color 0.3s ease; }
         .nav-link:hover { color: #009A00; }
-        .footer-link { color: white; text-decoration: none; }
-        .footer-link:hover { color: #d1e7dd; text-decoration: underline; }
+        .footer-link:hover { color: #ffffff; text-decoration: underline; }
 
         /* Slider animation */
         @keyframes slide {
@@ -252,34 +250,51 @@
         </div>
     </main>
 
-    <footer class="footer-bg py-10">
+    <footer class="footer-bg text-gray-200 pt-12">
         <div class="container mx-auto px-4">
-            <div class="flex flex-col lg:flex-row items-center lg:items-start justify-between space-y-4 lg:space-y-0">
-                <div class="text-center lg:text-left">
-                    <img src="https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/7photo/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png" alt="GPI AsiaTel Logo" class="h-16 mx-auto lg:mx-0 mb-2">
-                    <h2 class="text-3xl font-bold italic">GPI AsiaTel</h2>
-                    <p class="text-sm">Global Philippines International AsiaTel</p>
-                    <p class="text-sm">
-                        GPI AsiaTel is one of the Leading Telecom, Civil Works & Optical fiber Providers in Bangladesh delivering Technical Support 
-                        Services to Govt. & Non-Govt. GPI AsiaTel is fully equipped with self-owned tools required for any project related to 
-                        Telecommunication and Power sector. It has already achieved the reputation as a reliable and quality sub-contractor among 
-                        Vendors, investors, authorities and Operators.
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-8 mb-8 border-b border-white/30">
+                <div class="lg:col-span-2">
+                    <a href="https://gpiasiatel.com.bd">
+                        <img src="https://gpiasiatel.com.bd/wp-content/uploads/White-GPI-AsiaTel-Logo.png" alt="GPI AsiaTel Logo White" class="h-12 mb-4">
+                    </a>
+                    <p class="text-sm leading-relaxed">
+                        GPI AsiaTel is one of the Leading Telecom, Civil Works & Optical fiber Providers in Bangladesh delivering Technical Support Services 
+                        to Govt. & Non-Govt. GPI AsiaTel is fully equipped with self-owned tools required for any project related to Telecommunication and Power sector. 
+                        It has already achieved the reputation as a reliable and quality sub-contractor among Vendors, investors, authorities and Operators.
                     </p>
-                    <p class="text-sm">
+                    <p class="text-sm mt-2">
                         <strong>TIN No</strong> – 185049338292 &nbsp; | &nbsp;
                         <strong>VAT No</strong> – 17061044447 &nbsp; | &nbsp;
                         <strong>BIN No</strong> – 0001 68803-0402 &nbsp; | &nbsp;
                         <strong>Trade No</strong> – TRAD/DNCC/002168/2022
                     </p>
+
+                    <div class="flex space-x-3 mt-6">
+                        <a href="https://www.facebook.com/gpiasiatel/" class="bg-white text-green-600 p-2 rounded"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.linkedin.com/company/gpi-asiatel/" class="bg-white text-green-600 p-2 rounded"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://wa.link/ko4pe3" class="bg-white text-green-600 p-2 rounded"><i class="fab fa-whatsapp"></i></a>
+                    </div>
                 </div>
-                <div class="text-center lg:text-right space-y-2">
-                    <p><strong>📞</strong> +8801733339707, +880172049915</p>
-                    <p><strong>✉️</strong> info@gpiasiatel.com.bd, tarik@gpiasiatel.com.bd</p>
-                    <p><strong>📍</strong> Head Office: Plot# 711/4, Road# 11, Baitul Aman Housing Society, Adabor, Shyamoli, Dhaka-1207.</p>
+
+                <div>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center space-x-2">
+                            <span>📞</span>
+                            <span>+8801733339707, +8801712049915</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <span>✉️</span>
+                            <span>info@gpiasiatel.com.bd, tarik@gpiasiatel.com.bd</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <span>📍</span>
+                            <span><b>Head Office:</b> Plot# 711/4, Road# 11, Baitul Aman Housing Society, Adabor, Shyamoli, Dhaka-1207.</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mt-8 text-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-8">
                 <div>
                     <h3 class="text-white text-lg font-semibold mb-4">Company</h3>
                     <ul class="space-y-2 text-sm">
@@ -319,22 +334,20 @@
                 <div>
                     <h3 class="text-white text-lg font-semibold mb-4">Newsletter</h3>
                     <p class="text-sm mb-4">We'll give you just the right amount of love!❤ Sign up for our weekly update and be the first to know about our specials and promotions.</p>
-                    <form class="flex flex-col space-y-2">
-                        <input type="email" placeholder="Email" class="p-2 rounded-md bg-white/20 border border-white/30 text-white placeholder-gray-300 outline-none focus:border-white">
-                        <button type="submit" class="contact-btn text-white font-semibold py-2 rounded-md">Send</button>
+                    <form>
+                        <input type="email" placeholder="Email" class="w-full p-2 rounded-md bg-white/20 border border-white/30 text-white placeholder-gray-300 outline-none focus:border-white">
+                        <button type="submit" class="contact-btn w-full mt-2 text-white font-semibold py-2 rounded-md">Send</button>
                     </form>
-                    <p class="text-sm mt-2">Site Visited</p>
                 </div>
             </div>
 
-            <div class="py-4 text-sm flex flex-col sm:flex-row justify-between items-center mt-8">
+            <div class="py-4 text-sm flex flex-col sm:flex-row justify-between items-center">
                 <p class="text-center sm:text-left mb-2 sm:mb-0">
-                    Copyright © 2025 GPI ASIATEL. All Rights Reserved. Developed by Yasirul Haque
+                    Copyright © 2025 <a href="https://gpiasiatel.com.bd" class="font-semibold hover:underline">GPI ASIATEL</a>. All Rights Reserved.
                 </p>
                 <div class="flex items-center space-x-4">
-                    <a href="#" class="hover:underline text-white">Privacy Policy</a>
-                    <a href="#" class="hover:underline text-white">Terms & Conditions</a>
-                    <a href="#" class="hover:underline text-white">Contact Us</a>
+                    <a href="#" class="hover:underline">Terms & Conditions</a>
+                    <a href="#" class="hover:underline">Privacy Policy</a>
                 </div>
             </div>
         </div>
