@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPI AsiaTel &mdash; Satisfaction is the key</title>
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/7photo/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png
-">
-    <!-- Tailwind CSS CDN -->
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/7photo/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,12 +14,12 @@
         .header-top-bg { background-color: #008000; }
         .contact-btn { background-color: #009A00; transition: background-color 0.3s ease; }
         .contact-btn:hover { background-color: #007500; }
-        .footer-bg { background-color: #222222; }
+        .footer-bg { background-color: #008000; }
         .search-btn { background-color: #009A00; transition: background-color 0.3s ease; }
         .search-btn:hover { background-color: #007500; }
         .nav-link { transition: color 0.3s ease; }
         .nav-link:hover { color: #009A00; }
-        .footer-link:hover { color: #009A00; }
+        .footer-link:hover { color: #ffffff; text-decoration: underline; }
 
         /* Slider animation */
         @keyframes slide {
@@ -37,13 +34,13 @@
         }
         .slider > div {
             flex-shrink: 0;
-            width: 10rem; /* Adjusted for smaller client logos */
-            height: 6rem; /* Adjusted for logo proportions */
+            width: 10rem;
+            height: 6rem;
             margin-right: 1rem;
             cursor: pointer;
         }
         .slider img {
-            object-fit: contain; /* Ensures logos/images fit without distortion */
+            object-fit: contain;
             width: 100%;
             height: 100%;
         }
@@ -75,7 +72,7 @@
     </style>
     <script>
         function searchCertificate(event) {
-            event.preventDefault(); 
+            event.preventDefault();
             const regNumber = document.getElementById('searchInput').value.trim();
             if (regNumber) {
                 window.location.href = `result.html?reg=${encodeURIComponent(regNumber)}`;
@@ -85,7 +82,7 @@
         }
 
         function handleSearch() {
-            const fakeEvent = { preventDefault: () => {} }; 
+            const fakeEvent = { preventDefault: () => {} };
             searchCertificate(fakeEvent);
         }
 
@@ -110,7 +107,6 @@
                 const images = data.images && data.images.length > 0 ? data.images.slice(0, 7) : [];
                 const finalImages = images.length ? images : fallbackImages;
 
-                // Duplicate images for infinite smooth effect
                 const allImages = finalImages.concat(finalImages);
 
                 allImages.forEach((url, index) => {
@@ -121,7 +117,6 @@
                 });
             } catch (error) {
                 console.error(`Image load failed for ${containerId}:`, error);
-                // Fallback to placeholder images if fetch fails
                 const allImages = fallbackImages.concat(fallbackImages);
                 allImages.forEach((url, index) => {
                     const box = document.createElement("div");
@@ -133,7 +128,6 @@
         }
 
         window.onload = function() {
-            // Load Our Works images from JSON
             loadImages(
                 "imageGrid",
                 "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/7photo/work%20images.json",
@@ -148,7 +142,6 @@
                 ]
             );
 
-            // Load Our Clients images from JSON
             loadImages(
                 "clientGrid",
                 "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/7photo/claints%20imegs.json",
@@ -167,9 +160,7 @@
 </head>
 <body class="bg-gray-100">
 
-    <!-- Header Section -->
     <header class="bg-white shadow-md">
-        <!-- Top Bar -->
         <div class="header-top-bg text-white text-xs py-2">
             <div class="container mx-auto px-4 flex justify-between items-center">
                 <div class="flex items-center space-x-4">
@@ -192,7 +183,6 @@
             </div>
         </div>
 
-        <!-- Main Navigation -->
         <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="https://gpiasiatel.com.bd" id="logo-container">
                 <img src="https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/ca20f4b78f796a5f352677cd0e06aa9fdee4e938/foldername/GPI-AsiaTel-Logo-e1716128485650.png" alt="GPI AsiaTel Logo" class="h-10">
@@ -212,7 +202,6 @@
         </nav>
     </header>
 
-    <!-- Search Bar Section -->
     <div class="bg-white py-4 border-b">
         <div class="container mx-auto px-4">
             <form onsubmit="searchCertificate(event)" class="max-w-3xl mx-auto flex items-center border-2 border-gray-300 rounded-md overflow-hidden">
@@ -229,14 +218,12 @@
         </div>
     </div>
 
-    <!-- Search Result Display Area -->
     <main class="container mx-auto px-4 py-8">
         <h2 class="text-2xl font-bold mb-4 text-center">Search Result</h2>
         <div id="searchResult" class="bg-white p-6 rounded-lg shadow-md min-h-[200px] flex items-center justify-center">
             <p class="text-gray-500">Enter a registration number to see the result.</p>
         </div>
 
-        <!-- Our Works Slider -->
         <div class="mt-10">
             <div class="flex justify-center">
                 <div class="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md text-center text-2xl font-bold">
@@ -245,12 +232,10 @@
             </div>
             <div id="imageGridWrapper" class="overflow-hidden mt-10">
                 <div id="imageGrid" class="slider">
-                    <!-- Images will be injected here -->
                 </div>
             </div>
         </div>
 
-        <!-- Our Clients Slider -->
         <div class="mt-10">
             <div class="flex justify-center">
                 <div class="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md text-center text-2xl font-bold">
@@ -260,17 +245,56 @@
             <div class="text-center text-gray-600 mb-4">Our clients worldwide:</div>
             <div id="clientGridWrapper" class="overflow-hidden mt-2">
                 <div id="clientGrid" class="slider">
-                    <!-- Client images will be injected here -->
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer Section -->
-    <footer class="footer-bg text-gray-300 pt-12">
+    <footer class="footer-bg text-gray-200 pt-12">
         <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-8 mb-8 border-b border-white/30">
+                <div class="lg:col-span-2">
+                    <a href="https://gpiasiatel.com.bd">
+                        <img src="https://gpiasiatel.com.bd/wp-content/uploads/White-GPI-AsiaTel-Logo.png" alt="GPI AsiaTel Logo White" class="h-12 mb-4">
+                    </a>
+                    <p class="text-sm leading-relaxed">
+                        GPI AsiaTel is one of the Leading Telecom, Civil Works & Optical fiber Providers in Bangladesh delivering Technical Support Services 
+                        to Govt. & Non-Govt. GPI AsiaTel is fully equipped with self-owned tools required for any project related to Telecommunication and Power sector. 
+                        It has already achieved the reputation as a reliable and quality sub-contractor among Vendors, investors, authorities and Operators.
+                    </p>
+                    <p class="text-sm mt-2">
+                        <strong>TIN No</strong> – 185049338292 &nbsp; | &nbsp;
+                        <strong>VAT No</strong> – 17061044447 &nbsp; | &nbsp;
+                        <strong>BIN No</strong> – 0001 68803-0402 &nbsp; | &nbsp;
+                        <strong>Trade No</strong> – TRAD/DNCC/002168/2022
+                    </p>
+
+                    <div class="flex space-x-3 mt-6">
+                        <a href="https://www.facebook.com/gpiasiatel/" class="bg-white text-green-600 p-2 rounded"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.linkedin.com/company/gpi-asiatel/" class="bg-white text-green-600 p-2 rounded"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://wa.link/ko4pe3" class="bg-white text-green-600 p-2 rounded"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center space-x-2">
+                            <span>📞</span>
+                            <span>+8801733339707, +8801712049915</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <span>✉️</span>
+                            <span>info@gpiasiatel.com.bd, tarik@gpiasiatel.com.bd</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <span>📍</span>
+                            <span><b>Head Office:</b> Plot# 711/4, Road# 11, Baitul Aman Housing Society, Adabor, Shyamoli, Dhaka-1207.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-8">
-                <!-- Company -->
                 <div>
                     <h3 class="text-white text-lg font-semibold mb-4">Company</h3>
                     <ul class="space-y-2 text-sm">
@@ -284,7 +308,6 @@
                         <li><a href="https://gpiasiatel.com.bd/notices/" class="footer-link">Notices</a></li>
                     </ul>
                 </div>
-                <!-- Service -->
                 <div>
                     <h3 class="text-white text-lg font-semibold mb-4">Service</h3>
                     <ul class="space-y-2 text-sm">
@@ -298,7 +321,6 @@
                         <li><a href="https://gpiasiatel.com.bd/service/#Drive-Test" class="footer-link">Drive Test (DT)</a></li>
                     </ul>
                 </div>
-                <!-- Locations -->
                 <div>
                     <h3 class="text-white text-lg font-semibold mb-4">Locations</h3>
                     <ul class="space-y-2 text-sm">
@@ -309,27 +331,28 @@
                         <li><a href="https://gpiasiatel.com.bd/maintenance-offices/" class="footer-link">Maintenance Offices</a></li>
                     </ul>
                 </div>
-                <!-- Newsletter -->
                 <div>
                     <h3 class="text-white text-lg font-semibold mb-4">Newsletter</h3>
-                    <p class="text-sm mb-4">We'll give you just the right amount of love!  Sign up for our weekly update and be the first to know about our specials and promotions.</p>
+                    <p class="text-sm mb-4">We'll give you just the right amount of love!❤ Sign up for our weekly update and be the first to know about our specials and promotions.</p>
                     <form>
-                        <input type="email" placeholder="Email" class="w-full p-2 rounded-md bg-gray-700 border border-gray-600 text-white outline-none focus:border-green-500">
+                        <input type="email" placeholder="Email" class="w-full p-2 rounded-md bg-white/20 border border-white/30 text-white placeholder-gray-300 outline-none focus:border-white">
                         <button type="submit" class="contact-btn w-full mt-2 text-white font-semibold py-2 rounded-md">Send</button>
                     </form>
                 </div>
             </div>
-            <div class="border-t border-gray-700 py-4 text-sm text-center">
-                <p>
-                    Copyright © 2025 
-                    <a href="https://gpiasiatel.com.bd" class="text-green-400">GPI ASIATEL</a>. 
-                    All Rights Reserved. Developed by <span class="text-white">Tanimul Haque</span>
+
+            <div class="py-4 text-sm flex flex-col sm:flex-row justify-between items-center">
+                <p class="text-center sm:text-left mb-2 sm:mb-0">
+                    Copyright © 2025 <a href="https://gpiasiatel.com.bd" class="font-semibold hover:underline">GPI ASIATEL</a>. All Rights Reserved.
                 </p>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="hover:underline">Terms & Conditions</a>
+                    <a href="#" class="hover:underline">Privacy Policy</a>
+                </div>
             </div>
         </div>
     </footer>
 
-    <!-- Lightbox HTML -->
     <div id="lightbox" onclick="closeLightbox()">
         <span onclick="closeLightbox()">&times;</span>
         <img src="" alt="Full Image">
