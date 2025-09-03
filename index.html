@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPI AsiaTel &mdash; Satisfaction is the key</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>GPI AsiaTel — Satisfaction is the key</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/7photo/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -69,35 +69,108 @@
             color: white;
             cursor: pointer;
         }
+
+        /* Certificate area */
+        .cert-card { max-width: 820px; margin: 0 auto; background:#fff; padding:18px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+        .cert-header { display:flex; gap:14px; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:12px; }
+        .cert-photo { width:140px; height:180px; object-fit:cover; border:2px solid #222; }
+        .cert-fields .row{ display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed #eee; }
     </style>
+
+    <!-- html2canvas for PNG download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        function searchCertificate(event) {
+        // --- Search handler: tries to fetch /data/registrations/<REG>.json and render certificate ---
+        async function searchCertificate(event) {
             event.preventDefault();
             const regNumber = document.getElementById('searchInput').value.trim();
-            if (regNumber) {
-                window.location.href = `result.html?reg=${encodeURIComponent(regNumber)}`;
-            } else {
-                alert("দয়া করে একটি রেজিস্ট্রেশন নম্বর দিন!");
+            if (!regNumber) { alert("দয়া করে একটি রেজিস্ট্রেশন নম্বর দিন!"); return; }
+
+            const resultBox = document.getElementById('searchResult');
+            resultBox.innerHTML = `<div class="text-gray-600">Loading...</div>`;
+
+            // Build path - adjust if your hosting uses a different base path
+            const jsonPath = `/data/registrations/${encodeURIComponent(regNumber)}.json`;
+            try {
+                const res = await fetch(jsonPath, {cache: 'no-store'});
+                if (!res.ok) throw new Error('Not found');
+                const data = await res.json();
+
+                // Ensure minimal required fields exist in data
+                data.registration_number = data.registration_number || regNumber;
+                data.name = data.name || '';
+                data.designation = data.designation || '';
+                data.company = data.company || '';
+                data.issue_date = data.issue_date || '';
+                data.valid_till = data.valid_till || '';
+                data.verify_url = data.verify_url || (location.origin + location.pathname + `?reg=${encodeURIComponent(data.registration_number)}`);
+
+                renderCertificate(resultBox, data);
+            } catch (err) {
+                console.error(err);
+                resultBox.innerHTML = `<div class="text-red-500">No data found for <strong>${escapeHtml(regNumber)}</strong>.</div>`;
             }
         }
 
-        function handleSearch() {
-            const fakeEvent = { preventDefault: () => {} };
-            searchCertificate(fakeEvent);
+        // Render certificate HTML into container
+        function renderCertificate(container, d) {
+            const photoUrl = `/photos/${encodeURIComponent(d.registration_number)}.jpg`;
+            container.innerHTML = `
+                <div class="cert-card" id="certificateNode">
+                    <div class="cert-header">
+                        <img src="https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/ca20f4b78f796a5f352677cd0e06aa9fdee4e938/foldername/GPI-AsiaTel-Logo-e1716128485650.png" alt="logo" style="width:72px;height:72px;object-fit:contain">
+                        <div>
+                            <h3 class="text-xl font-bold">GPI AsiaTel</h3>
+                            <div class="text-sm text-gray-600">Satisfaction is the key</div>
+                        </div>
+                        <div style="margin-left:auto;text-align:right;font-size:12px;color:#666">
+                            <div>Issue: ${escapeHtml(d.issue_date)}</div>
+                            <div>Valid Till: ${escapeHtml(d.valid_till)}</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:18px; align-items:flex-start; padding-top:12px;">
+                        <div>
+                            <img src="${photoUrl}" alt="photo" onerror="this.src='https://via.placeholder.com/160x200?text=No+Photo'" class="cert-photo rounded-md">
+                        </div>
+                        <div class="cert-fields" style="flex:1;">
+                            <div class="row"><div>Registration No</div><div><strong>${escapeHtml(d.registration_number)}</strong></div></div>
+                            <div class="row"><div>Name</div><div><strong>${escapeHtml(d.name)}</strong></div></div>
+                            <div class="row"><div>Designation</div><div>${escapeHtml(d.designation)}</div></div>
+                            <div class="row"><div>Company</div><div>${escapeHtml(d.company)}</div></div>
+                            <div class="row"><div>Verify</div><div><a href="${escapeAttr(d.verify_url)}" target="_blank" class="text-green-600 underline">Verify Link</a></div></div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+                        <button onclick="downloadPNG()" class="search-btn text-white px-4 py-2 rounded-md">Download PNG</button>
+                        <a href="/data/registrations/${encodeURIComponent(d.registration_number)}.json" class="px-4 py-2 rounded-md border" target="_blank">View JSON</a>
+                    </div>
+                </div>
+            `;
         }
 
-        function openLightbox(src) {
-            const lb = document.getElementById("lightbox");
-            lb.style.display = "flex";
-            lb.querySelector("img").src = src;
+        // Download certificate area as PNG
+        async function downloadPNG() {
+            const node = document.getElementById('certificateNode');
+            if (!node) return;
+            const canvas = await html2canvas(node, {scale:2, backgroundColor:'#ffffff'});
+            const url = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            const reg = node.querySelector('strong') ? node.querySelector('strong').textContent.replace(/\s+/g, '_') : 'certificate';
+            a.download = reg + '.png';
+            a.href = url;
+            a.click();
         }
 
-        function closeLightbox() {
-            document.getElementById("lightbox").style.display = "none";
-        }
+        // escape helpers
+        function escapeHtml(str){ return String(str).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+        function escapeAttr(s){ return escapeHtml(s).replace(/"/g,'&quot;'); }
 
+        // --- Slider image loading (kept from your original, with same file-URLs) ---
         async function loadImages(containerId, jsonUrl, fallbackImages) {
             const container = document.getElementById(containerId);
+            if (!container) return;
             container.innerHTML = "";
 
             try {
@@ -112,7 +185,7 @@
                 allImages.forEach((url, index) => {
                     const box = document.createElement("div");
                     box.innerHTML = `<img src="${url}" alt="Image ${index+1}" class="object-contain w-full h-full rounded-lg shadow-md">`;
-                    box.addEventListener("click", () => openLightbox(url));
+                    box.addEventListener("click", (e) => { e.stopPropagation(); openLightbox(url); });
                     container.appendChild(box);
                 });
             } catch (error) {
@@ -127,7 +200,15 @@
             }
         }
 
+        function openLightbox(src) {
+            const lb = document.getElementById("lightbox");
+            lb.style.display = "flex";
+            lb.querySelector("img").src = src;
+        }
+        function closeLightbox() { document.getElementById("lightbox").style.display = "none"; }
+
         window.onload = function() {
+            // Load images for sliders (paths left as you had them)
             loadImages(
                 "imageGrid",
                 "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/7photo/work%20images.json",
@@ -197,6 +278,7 @@
             </div>
 
             <div class="flex items-center space-x-4">
+                <a href="/admin.html" class="contact-btn text-white font-semibold px-4 py-2 rounded-md">Admin</a>
                 <a href="https://gpiasiatel.com.bd/contact-us/" class="contact-btn text-white font-semibold px-5 py-2 rounded-md">Contact Us</a>
             </div>
         </nav>
@@ -231,8 +313,7 @@
                 </div>
             </div>
             <div id="imageGridWrapper" class="overflow-hidden mt-10">
-                <div id="imageGrid" class="slider">
-                </div>
+                <div id="imageGrid" class="slider"></div>
             </div>
         </div>
 
@@ -244,8 +325,7 @@
             </div>
             <div class="text-center text-gray-600 mb-4">Our clients worldwide:</div>
             <div id="clientGridWrapper" class="overflow-hidden mt-2">
-                <div id="clientGrid" class="slider">
-                </div>
+                <div id="clientGrid" class="slider"></div>
             </div>
         </div>
     </main>
