@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - GPI AsiaTel</title>
+  <script>
+    const CONFIG_URL = "https://raw.githubusercontent.com/Hridoy398398/myapp-update/refs/heads/main/login.json";
+    let storedHash = "";
+
+    async function loadConfig() {
+      const res = await fetch(CONFIG_URL);
+      const data = await res.json();
+      storedHash = data.admin_password_hash;
+    }
+
+    async function hashPassword(pwd) {
+      const msgUint8 = new TextEncoder().encode(pwd);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function login(event) {
+      event.preventDefault();
+      const pwd = document.getElementById("password").value;
+      const hash = await hashPassword(pwd);
+      if (hash === storedHash) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("formBox").style.display = "block";
+      } else {
+        alert("❌ Wrong password");
+      }
+    }
+
+    window.onload = loadConfig;
+  </script>
+</head>
+<body>
+  <h2>🔐 Admin Login</h2>
+  <div id="loginBox">
+    <form onsubmit="login(event)">
+      <input id="password" type="password" placeholder="Enter Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <div id="formBox" style="display:none;">
+    <h3>➕ Add Certificate Data</h3>
+    <form id="dataForm">
+      <input name="registration_number" placeholder="Registration Number" required><br>
+      <input name="name" placeholder="Name" required><br>
+      <input name="designation" placeholder="Designation" required><br>
+      <input name="company" placeholder="Company" required><br>
+      <input type="file" name="photo" accept="image/*" required><br>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</body>
+</html>
