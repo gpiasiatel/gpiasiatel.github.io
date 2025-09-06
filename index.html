@@ -104,7 +104,7 @@
                 const res = await fetch(jsonUrl);
                 const data = await res.json();
 
-                const images = data.images && data.images.length > 1 ? data.images.slice(1, 14) : [];
+                const images = data.images && data.images.length > 0 ? data.images.slice(0, 14) : [];
                 const finalImages = images.length ? images : fallbackImages;
 
                 const allImages = finalImages.concat(finalImages);
