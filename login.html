@@ -1,311 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Ribi</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #00AEEF, #40C4FF);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Login</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
 
-        .cloud {
-            position: absolute;
-            font-size: 2em;
-            opacity: 0.6;
-            animation: float 15s infinite linear;
-            color: #FFFFFF;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
+    /* Animated Gradient Background */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, #00c6ff, #0072ff, #f7971e, #ffd200);
+      background-size: 400% 400%;
+      animation: gradientMove 15s ease infinite;
+      z-index: -1;
+    }
 
-        .cloud:nth-child(1) { top: 15%; left: 5%; animation-delay: 0s; }
-        .cloud:nth-child(2) { top: 25%; right: 10%; animation-delay: 3s; }
-        .cloud:nth-child(3) { top: 50%; left: 15%; animation-delay: 6s; }
-        .cloud:nth-child(4) { top: 70%; right: 5%; animation-delay: 9s; }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-        @keyframes float {
-            0% { transform: translateX(-100px) translateY(0); }
-            50% { transform: translateX(100vw) translateY(-50px); }
-            100% { transform: translateX(100vw) translateY(0); }
-        }
+    .login-container {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 40px;
+      width: 320px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      text-align: center;
+    }
 
-        .login-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 400px;
-            position: relative;
-            z-index: 10;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
+    .logo {
+      width: 100px;
+      margin-bottom: 20px;
+    }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
+    .login-container input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+    }
 
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #FF6B35, #F7931E);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            font-size: 24px;
-            color: white;
-        }
+    .login-container input[type="text"],
+    .login-container input[type="password"] {
+      background: #f1f1f1;
+    }
 
-        .logo-text {
-            font-size: 32px;
-            font-weight: bold;
-            color: #FF6B35;
-            letter-spacing: 1px;
-        }
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background: #0072ff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
+    .login-container button:hover {
+      background: #0056cc;
+    }
 
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-            font-size: 14px;
-        }
+    .login-container a {
+      display: block;
+      margin-top: 15px;
+      font-size: 14px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+    }
 
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus, input[type="password"]:focus {
-            outline: none;
-            border-color: #00AEEF;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #FF6B35, #F7931E);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-bottom: 15px;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-        }
-
-        .forget-link {
-            color: #00AEEF;
-            text-decoration: none;
-            font-size: 14px;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .forget-link:hover {
-            text-decoration: underline;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 20px 0;
-        }
-
-        .divider-line {
-            flex: 1;
-            height: 1px;
-            background: #ddd;
-        }
-
-        .divider-text {
-            padding: 0 15px;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .social-login {
-            margin-top: 20px;
-        }
-
-        .social-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 12px;
-            margin: 5px 0;
-            background: white;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            text-decoration: none;
-            color: #333;
-            font-size: 14px;
-            transition: border-color 0.3s, transform 0.2s;
-        }
-
-        .social-btn:hover {
-            border-color: #00AEEF;
-            transform: translateY(-2px);
-        }
-
-        .social-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-            border-radius: 50%;
-        }
-
-        .footer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-        }
-
-        .footer a {
-            color: #00AEEF;
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    .login-container a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-    <div class="cloud">☁️</div>
-    <div class="cloud">☁️</div>
-    <div class="cloud">☁️</div>
-    <div class="cloud">☁️</div>
 
-    <div class="login-container">
-        <div class="logo" id="logo"></div>
+  <div class="login-container">
+    <!-- Logo from link -->
+    <img src="https://gpiasiatel.com.bd/wp-content/uploads/GPI-AsiaTel-Logo-e1716128485650.png" alt="Logo" class="logo">
 
-        <form id="loginForm">
-            <div class="input-group">
-                <label for="username">Enter the user account</label>
-                <input type="text" id="username" name="username" placeholder="Enter the user account" required>
-            </div>
-            <div class="input-group">
-                <label for="password">Enter the password</label>
-                <input type="password" id="password" name="password" placeholder="Enter the password" required>
-            </div>
-            <button type="submit" class="login-btn">Log In</button>
-        </form>
+    <form>
+      <input type="text" placeholder="Enter the user account" required>
+      <input type="password" placeholder="Enter the password" required>
+      <button type="submit">Log In</button>
+    </form>
 
-        <a href="#" class="forget-link">Forgot Password?</a>
+    <a href="#">Forget Password</a>
+  </div>
 
-        <div class="divider">
-            <div class="divider-line"></div>
-            <div class="divider-text">Login with other account</div>
-            <div class="divider-line"></div>
-        </div>
-
-        <div class="social-login" id="socialLogins"></div>
-    </div>
-
-    <div class="footer">
-        <a href="#">Privacy Policy Statement</a> | Copyright © Your Company Name Ltd, 2025. All rights reserved.
-    </div>
-
-    <script>
-        const logoJsonUrl = 'https://your-json-link.com/logo.json'; // Replace with your logo JSON URL
-        const socialJsonUrl = 'https://your-json-link.com/logos.json'; // Replace with your social logos JSON URL
-
-        async function loadLogo() {
-            try {
-                const response = await fetch(logoJsonUrl);
-                const data = await response.json();
-                const logoDiv = document.getElementById('logo');
-                const img = document.createElement('img');
-                img.src = data.logo;
-                img.alt = 'Logo';
-                img.style.width = '50px';
-                img.style.height = '50px';
-                img.style.marginRight = '10px';
-                const text = document.createElement('span');
-                text.textContent = 'Ribi';
-                text.style.fontSize = '32px';
-                text.style.fontWeight = 'bold';
-                text.style.color = '#FF6B35';
-                text.style.letterSpacing = '1px';
-                logoDiv.appendChild(img);
-                logoDiv.appendChild(text);
-            } catch (error) {
-                console.error('Logo load error:', error);
-                const fallback = document.createElement('div');
-                fallback.className = 'logo';
-                fallback.innerHTML = '<div class="logo-icon">▶</div><div class="logo-text">Ribi</div>';
-                document.getElementById('logo').appendChild(fallback);
-            }
-        }
-
-        async function loadSocialLogins() {
-            try {
-                const response = await fetch(socialJsonUrl);
-                const data = await response.json();
-                const container = document.getElementById('socialLogins');
-
-                data.forEach(item => {
-                    const btn = document.createElement('a');
-                    btn.href = item.link;
-                    btn.className = 'social-btn';
-                    btn.innerHTML = `
-                        <img src="${item.logo}" alt="${item.name}" class="social-icon">
-                        Login with ${item.name}
-                    `;
-                    container.appendChild(btn);
-                });
-            } catch (error) {
-                console.error('Social logins load error:', error);
-                const fallback = document.createElement('p');
-                fallback.textContent = 'Social login options loading...';
-                fallback.style.color = '#666';
-                container.appendChild(fallback);
-            }
-        }
-
-        window.addEventListener('load', () => {
-            loadLogo();
-            loadSocialLogins();
-        });
-
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            alert(`Login attempt: ${username}`);
-        });
-    </script>
 </body>
 </html>
