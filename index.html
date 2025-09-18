@@ -24,7 +24,7 @@
         /* Slider animation */
         @keyframes slide {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
+            100% { transform: translateX(-50%); } /* Half of the full width to create a continuous loop */
         }
 
         .slider {
@@ -104,7 +104,8 @@
                 const images = data.images && data.images.length > 0 ? data.images.slice(0, 14) : [];
                 const finalImages = images.length ? images : fallbackImages;
 
-                const allImages = finalImages.concat(finalImages);
+                // Create a seamless loop by duplicating the images
+                const allImages = [...finalImages, ...finalImages];
 
                 allImages.forEach((url, index) => {
                     const box = document.createElement("div");
@@ -114,7 +115,7 @@
                 });
             } catch (error) {
                 console.error(`Image load failed for ${containerId}:`, error);
-                const allImages = fallbackImages.concat(fallbackImages);
+                const allImages = [...fallbackImages, ...fallbackImages];
                 allImages.forEach((url, index) => {
                     const box = document.createElement("div");
                     box.innerHTML = `<img src="${url}" alt="Image ${index+1}" class="object-contain w-full h-full rounded-lg shadow-md">`;
