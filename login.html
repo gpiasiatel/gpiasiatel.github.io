@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Login - Demo</title>
   <style>
-    :root{
-      --card-w: 360px;
-    }
+    :root{ --card-w:360px; }
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -21,7 +19,6 @@
       background: radial-gradient(circle at 50% 40%, #38bdf8 0%, #06b6d4 30%, #0891b2 100%);
     }
 
-    /* animated soft waves / gradient layer */
     .bg-anim {
       position:fixed;
       inset:-25%;
@@ -37,21 +34,11 @@
       100%{ transform: translateY(0) rotate(8deg) scale(1); }
     }
 
-    /* clouds / decorative shapes (optional) */
-    .cloud {
-      position:absolute;
-      width:300px;
-      height:120px;
-      background:rgba(255,255,255,0.06);
-      border-radius:100px;
-      filter: blur(6px);
-      z-index:0;
-    }
+    .cloud { position:absolute; width:300px; height:120px; background:rgba(255,255,255,0.06); border-radius:100px; filter: blur(6px); z-index:0; }
     .cloud.c1{ left:5%; top:10%; transform:scale(.9) }
     .cloud.c2{ right:6%; top:18%; transform:scale(.7) }
-    .cloud.c3{ left: -5%; bottom: 5%; transform:scale(1.2) }
+    .cloud.c3{ left:-5%; bottom:5%; transform:scale(1.2) }
 
-    /* card */
     .card {
       position:relative;
       z-index:2;
@@ -65,23 +52,12 @@
       text-align:center;
     }
 
-    .logo {
-      width:110px;
-      height:auto;
-      display:block;
-      margin: 0 auto 14px;
-    }
+    .logo { width:110px; height:auto; display:block; margin:0 auto 14px; }
 
-    .title {
-      margin:6px 0 18px;
-      font-size:18px;
-      opacity:0.95;
-    }
+    .title { margin:6px 0 18px; font-size:18px; opacity:0.95; }
 
     form { display:block; text-align:left; }
-    .field {
-      margin-bottom:12px;
-    }
+    .field { margin-bottom:12px; }
     input[type="text"], input[type="password"]{
       width:100%;
       padding:12px 14px;
@@ -108,39 +84,18 @@
     }
     .btn:active{ transform:translateY(1px) }
 
-    .links {
-      display:flex;
-      justify-content:space-between;
-      margin-top:12px;
-      font-size:13px;
-      opacity:0.95;
-    }
+    .links { display:flex; justify-content:space-between; margin-top:12px; font-size:13px; opacity:0.95; }
     .links a { color: rgba(255,255,255,0.92); text-decoration:none }
     .links a:hover{ text-decoration:underline }
 
-    .msg {
-      margin-top:12px;
-      font-size:14px;
-      padding:10px;
-      border-radius:8px;
-      display:none;
-    }
-    .msg.error{
-      background: rgba(255,80,80,0.12);
-      color:#ffd7d7;
-      display:block;
-    }
-    .msg.success{
-      background: rgba(40,220,120,0.12);
-      color:#eafff0;
-      display:block;
-    }
+    .msg { margin-top:12px; font-size:14px; padding:10px; border-radius:8px; display:none; }
+    .msg.error{ background: rgba(255,80,80,0.12); color:#ffd7d7; display:block; }
+    .msg.success{ background: rgba(40,220,120,0.12); color:#eafff0; display:block; }
 
-    /* small footer line like sample */
     .footer { margin-top:10px; text-align:center; font-size:12px; opacity:0.8; }
 
     @media (max-width:420px){
-      :root{ --card-w: 92vw; }
+      :root{ --card-w:92vw; }
       .logo{ width:90px }
     }
   </style>
@@ -152,7 +107,7 @@
   <div class="cloud c3"></div>
 
   <div class="card" role="main" aria-labelledby="loginTitle">
-    <!-- logo: replace src below with your logo link -->
+    <!-- লোগো: এখানে তোমার লোগো লিংক বসাও -->
     <img id="siteLogo" class="logo" src="https://gpiasiatel.com.bd/wp-content/uploads/GPI-AsiaTel-Logo-e1716128485650.png" alt="Site Logo" onerror="this.style.display='none'">
     <div id="loginTitle" class="title">Enter your account</div>
 
@@ -172,119 +127,85 @@
     </div>
 
     <div id="message" class="msg" role="status" aria-live="polite"></div>
-
-    <div class="footer">Powered by Gpiasiatel • 2025</div>
+    <div class="footer">Powered by GpiasiaTel • 2025</div>
   </div>
 
   <script>
-    /****************************************************************
-     * CONFIGURATION:
-     * এখানে তোমার GitHub raw JSON URL বসাবে।
-     *
-     * উদাহরণ JSON ফরম্যাট সমর্থিত:
-     * 1) array of objects:
-     * [
-     *   { "username":"user1", "password":"pass1" },
-     *   { "username":"admin", "password":"adminpass" }
-     * ]
-     *
-     * 2) object with "users" key:
-     * { "users": [ {"username":"a","password":"1"}, ... ] }
-     *
-     * 3) object map:
-     * { "user1":"pass1", "admin":"adminpass" }
-     *
-     * লক্ষ্য: GitHub থেকে "Raw" লিংক ব্যবহার করতে হবে, উদাহরণ:
-     * https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/path/to/creds.json
-     ****************************************************************/
+    // remote JSON (your GitHub raw JSON)
     const GITHUB_JSON_URL = "https://raw.githubusercontent.com/Hridoy398398/myapp-update/refs/heads/main/login.json";
 
+    let usersData = null;
     const messageEl = document.getElementById('message');
-    let usersData = null; // fetched JSON content (kept in memory)
 
-    // fetch the JSON once when page loads
-    async function loadUsersJson(){
-      if(!GITHUB_JSON_URL || GITHUB_JSON_URL.includes("https://raw.githubusercontent.com/Hridoy398398/myapp-update/refs/heads/main/login.json")){
-        console.warn("GitHub JSON URL not configured. Replace GITHUB_JSON_URL in the script.");
-        return;
-      }
+    async function loadUsersJsonFromGithub(){
       try {
-        // add cache-buster to avoid aggressive caching while developing
-        const res = await fetch(GITHUB_JSON_URL + (GITHUB_JSON_URL.includes('?') ? '&' : '?') + '_ts=' + Date.now(), { method: 'GET', cache: 'no-store' });
+        const res = await fetch(GITHUB_JSON_URL + ((GITHUB_JSON_URL.includes('?')) ? '&' : '?') + '_ts=' + Date.now(), { method: 'GET', cache: 'no-store' });
         if(!res.ok) throw new Error('Network response was not ok: ' + res.status);
         const data = await res.json();
         usersData = data;
-        console.info('Users JSON loaded:', usersData);
+        console.info('Remote users JSON loaded:', usersData);
       } catch (err) {
         console.error('Failed to load users JSON from GitHub:', err);
-        // show small warn in footer (non-blocking)
         messageEl.className = 'msg error';
-        messageEl.textContent = 'Warning: Failed to load auth data. Check GITHUB JSON URL or network.';
-        // keep it visible but allow user to try manual login (will fail until JSON loads)
+        messageEl.textContent = 'Warning: Failed to load auth data. Check JSON URL or network.';
         messageEl.style.display = 'block';
       }
     }
 
-    // validate credentials against different JSON shapes
     function validateCredentials(data, uname, pwd){
       if(!data) return false;
-
-      // 1) If array: [{username, password}, ...]
       if(Array.isArray(data)){
         return data.some(u => (u.username == uname || u.user == uname) && (u.password == pwd || u.pass == pwd));
       }
-
-      // 2) If object with key "users" (array)
       if(data.users && Array.isArray(data.users)){
         return data.users.some(u => (u.username == uname || u.user == uname) && (u.password == pwd || u.pass == pwd));
       }
-
-      // 3) If object map {username: password, ...}
-      // ensure values are strings (passwords)
-      const isMapLike = Object.values(data).every(v => typeof v === 'string' || typeof v === 'number');
-      if(isMapLike){
-        // allow numeric passwords by converting to string
-        const val = data[uname];
-        return val !== undefined && String(val) === String(pwd);
+      const valuesArePrimitive = Object.values(data).every(v => typeof v === 'string' || typeof v === 'number');
+      if(valuesArePrimitive){
+        const v = data[uname];
+        return v !== undefined && String(v) === String(pwd);
       }
-
-      // unknown shape
       return false;
     }
 
     document.getElementById('loginForm').addEventListener('submit', async function(e){
       e.preventDefault();
-      messageEl.style.display = 'none';
-      messageEl.className = 'msg';
+      messageEl.style.display='none';
+      messageEl.className='msg';
       const uname = document.getElementById('username').value.trim();
       const pwd = document.getElementById('password').value;
 
-      // if JSON not loaded yet, try to load now (first-time)
+      // ensure remote data is loaded
       if(!usersData){
-        await loadUsersJson();
+        await loadUsersJsonFromGithub();
       }
 
-      // final check
       const ok = validateCredentials(usersData, uname, pwd);
       if(ok){
-        messageEl.className = 'msg success';
+        messageEl.className='msg success';
         messageEl.textContent = 'Login successful — welcome, ' + uname + '!';
-        messageEl.style.display = 'block';
+        messageEl.style.display='block';
 
-        // demo action: redirect / show protected area
+        // ====== Success action: open form.html ======
+        // Option A: simple open in same tab:
+        // window.location.href = 'form.html';
+
+        // Option B: pass username as query param (so form.html can read it if needed):
+        const params = new URLSearchParams();
+        params.set('user', encodeURIComponent(uname));
         setTimeout(() => {
-          // change below to your protected page or desired action
-          window.location.href = './dashboard.html'; // replace or remove
-        }, 900);
+          window.location.href = 'form.html?' + params.toString();
+        }, 700);
+        // ============================================
       } else {
-        messageEl.className = 'msg error';
+        messageEl.className='msg error';
         messageEl.textContent = 'Wrong username or password';
-        messageEl.style.display = 'block';
+        messageEl.style.display='block';
       }
     });
 
-    // try to load on start (non-blocking)
-    loadUsersJson();
+    // preload JSON on page load
+    loadUsersJsonFromGithub();
   </script>
 </body>
 </html>
