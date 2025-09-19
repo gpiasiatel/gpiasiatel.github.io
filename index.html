@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Search</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --primary-green: #048654;
+      --dark-green: #024731;
+    }
+    .search-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      max-width: 768px;
+      margin: 0 auto;
+      border-radius: 9999px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1),
+                  0 2px 4px -1px rgba(0,0,0,0.06);
+      transition: box-shadow 0.3s ease;
+    }
+    .search-container:focus-within {
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1),
+                  0 4px 6px -2px rgba(0,0,0,0.05);
+    }
+    .search-input {
+      flex-grow: 1;
+      padding: 1rem 1.5rem;
+      border: 2px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-green);
+    }
+    .search-button {
+      background-color: var(--primary-green);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      transition: background-color 0.3s ease;
+    }
+    .search-button:hover {
+      background-color: var(--dark-green);
+    }
+    .floating-label {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      pointer-events: none;
+      transition: all 0.2s ease-out;
+      font-size: 1rem;
+    }
+    .search-input:focus + .floating-label,
+    .search-input:not(:placeholder-shown) + .floating-label {
+      top: 0.25rem;
+      font-size: 0.75rem;
+      color: var(--primary-green);
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+  <!-- 🔍 Search Box -->
+  <div class="bg-white py-6 shadow-md">
+    <div class="px-4">
+      <form onsubmit="searchCertificate(event)" class="search-container">
+        <input id="searchInput" type="text" placeholder=" " class="search-input text-gray-700" required>
+        <label for="searchInput" class="floating-label">
+          Search for your certificate by registration number
+        </label>
+        <button type="submit" class="search-button">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" 
+               fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 📄 Result Section -->
+  <section class="px-4 py-8">
+    <h2 class="text-2xl font-bold mb-4 text-center text-green-800">
+      Search Result
+    </h2>
+    <div id="searchResult" 
+         class="bg-white p-6 rounded-lg shadow-md min-h-[200px] flex items-center justify-center">
+      <p class="text-gray-500">
+        Enter a registration number to see the result.
+      </p>
+    </div>
+  </section>
+
+  <script>
+    function searchCertificate(event) {
+      event.preventDefault();
+      const regNumber = document.getElementById('searchInput').value.trim();
+      if (regNumber) {
+        // 🔗 result.html এ যাবে
+        window.location.href = `result.html?reg=${encodeURIComponent(regNumber)}`;
+      } else {
+        alert("দয়া করে একটি রেজিস্ট্রেশন নম্বর দিন!");
+      }
+    }
+  </script>
+
+</body>
+</html>
