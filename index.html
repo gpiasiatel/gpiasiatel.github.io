@@ -164,6 +164,38 @@
             color: var(--primary-green);
             transform: translateY(0);
         }
+
+        /* Awards & Certificates section specific styles */
+        .awards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            justify-items: center;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .awards-grid-item {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .awards-grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .awards-grid-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -270,6 +302,20 @@
             <div class="text-center text-gray-600 mb-4">Our clients worldwide:</div>
             <div id="clientGridWrapper" class="slider-wrapper mt-2">
                 <div id="clientGrid" class="slider">
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-10 py-10 bg-gray-50">
+            <div class="max-w-4xl mx-auto text-center">
+                <span class="inline-block bg-light-green text-dark-green text-sm font-semibold px-4 py-2 rounded-full mb-4">Awards & Certificates</span>
+                <h2 class="text-4xl font-extrabold text-gray-800 mb-4">Honoring Our Accomplishments</h2>
+                <p class="text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Our company's unwavering commitment to excellence has been recognized through various prestigious awards and certificates. 
+                    From industry accolades to customer satisfaction awards, we proudly display our achievements here.
+                </p>
+                <div id="awardsGrid" class="awards-grid">
+                    
                 </div>
             </div>
         </section>
@@ -405,75 +451,67 @@
             document.getElementById("lightbox").style.display = "none";
         }
 
-        async function loadImages(containerId, jsonUrl, fallbackImages) {
+        function renderImages(containerId, imageUrls, isSlider = false) {
             const container = document.getElementById(containerId);
             container.innerHTML = "";
 
-            try {
-                const res = await fetch(jsonUrl);
-                const data = await res.json();
+            const imagesToDisplay = isSlider ? [...imageUrls, ...imageUrls] : imageUrls;
 
-                const images = data.images && data.images.length > 0 ? data.images.slice(0, 14) : [];
-                const finalImages = images.length ? images : fallbackImages;
-
-                const allImages = [...finalImages, ...finalImages];
-
-                allImages.forEach((url, index) => {
-                    const box = document.createElement("div");
-                    box.innerHTML = `<img src="${url}" alt="Image ${index+1}" class="object-contain w-full h-full rounded-lg shadow-md">`;
-                    box.addEventListener("click", () => openLightbox(url));
-                    container.appendChild(box);
-                });
-            } catch (error) {
-                console.error(`Image load failed for ${containerId}:`, error);
-                const allImages = [...fallbackImages, ...fallbackImages];
-                allImages.forEach((url, index) => {
-                    const box = document.createElement("div");
-                    box.innerHTML = `<img src="${url}" alt="Image ${index+1}" class="object-contain w-full h-full rounded-lg shadow-md">`;
-                    box.addEventListener("click", () => openLightbox(url));
-                    container.appendChild(box);
-                });
-            }
+            imagesToDisplay.forEach((url, index) => {
+                const box = document.createElement("div");
+                if (containerId === "awardsGrid") {
+                    box.className = "awards-grid-item";
+                } else {
+                    box.className = "slider-item";
+                }
+                box.innerHTML = `<img src="${url}" alt="Image ${index+1}">`;
+                box.addEventListener("click", () => openLightbox(url));
+                container.appendChild(box);
+            });
         }
 
         window.onload = function() {
-            loadImages(
-                "imageGrid",
-                "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/7photo/work%20images.json",
-                [
-                    "https://via.placeholder.com/200x150?text=Work1",
-                    "https://via.placeholder.com/200x150?text=Work2",
-                    "https://via.placeholder.com/200x150?text=Work3",
-                    "https://via.placeholder.com/200x150?text=Work4",
-                    "https://via.placeholder.com/200x150?text=Work5",
-                    "https://via.placeholder.com/200x150?text=Work6",
-                    "https://via.placeholder.com/200x150?text=Work7",
-                    "https://via.placeholder.com/200x150?text=Work8",
-                    "https://via.placeholder.com/200x150?text=Work9",
-                    "https://via.placeholder.com/200x150?text=Work10",
-                    "https://via.placeholder.com/200x150?text=Work11",
-                    "https://via.placeholder.com/200x150?text=Work12"
-                ]
-            );
+            const workImages = [
+                "https://gpiasiatel.com.bd/wp-content/uploads/photo_2024-05-16_12-39-56.jpg",
+    "https://gpiasiatel.com.bd/wp-content/uploads/photo_2024-05-16_12-39-56-2.jpg",
+    "https://gpiasiatel.com.bd/wp-content/uploads/photo_2024-05-26_12-01-09.jpg",
+    "https://gpiasiatel.com.bd/wp-content/uploads/WhatsApp-Image-2024-05-15-at-16.52.32_caac7814.jpg",
+    "https://gpiasiatel.com.bd/wp-content/uploads/photo_2024-05-26_12-52-23.jpg",
+    "https://gpiasiatel.com.bd/wp-content/uploads/photo_2024-05-15_16-51-06-2.jpg",
+    "https://gpiasiatel.com.bd/wp-content/uploads/civil-construction.jpg",
+    "https://gpiasiatel.com.bd/wp-content/uploads/IMG-20250322-WA0101.jpg",
+    "https://gpiasiatel.com.bd/wp-content/uploads/WhatsApp-Image-2024-05-27-at-16.59.09_125b244a.jpg",
+    "https://gpiasiatel.com.bd/wp-content/uploads/photo_2024-05-16_11-36-24.jpg",
+    "https://gpiasiatel.com.bd/wp-content/uploads/photo_2024-05-26_13-33-29.jpg",
+    "https://gpiasiatel.com.bd/wp-content/uploads/WhatsApp-Image-2024-05-15-at-16.52.32_6a36dea2.jpg"
+            ];
+            const clientImages = [
+                "https://gpiasiatel.com.bd/wp-content/uploads/1.png",
+                "https://gpiasiatel.com.bd/wp-content/uploads/2.png",
+                "https://gpiasiatel.com.bd/wp-content/uploads/3.png",
+                "https://gpiasiatel.com.bd/wp-content/uploads/4.png",
+                "https://gpiasiatel.com.bd/wp-content/uploads/5.png",
+                "https://gpiasiatel.com.bd/wp-content/uploads/6.png",
+                "https://gpiasiatel.com.bd/wp-content/uploads/7.png",
+                "https://gpiasiatel.com.bd/wp-content/uploads/8.png",
+                "https://gpiasiatel.com.bd/wp-content/uploads/9.png",
+                "https://gpiasiatel.com.bd/wp-content/uploads/10.png.jpeg",
+                "https://gpiasiatel.com.bd/wp-content/uploads/Untitled-design-1.png",
+                "https://gpiasiatel.com.bd/wp-content/uploads/9.png"
+            ];
+            const awardsImages = [
+                "https://gpiasiatel.com.bd/wp-content/uploads/Business-license.jpg",
+                "https://gpiasiatel.com.bd/wp-content/uploads/Quality-Management-System-Certificate.jpg",
+                "https://gpiasiatel.com.bd/wp-content/uploads/GPI-Contract-license.jpg",
+                "https://gpiasiatel.com.bd/wp-content/uploads/GPI-Tax-Registration-Certificate.jpg",
+                "https://gpiasiatel.com.bd/wp-content/uploads/Tax-Certificate.jpg",
+                "https://gpiasiatel.com.bd/wp-content/uploads/Occupational-Health-and-Safety-Management-Systems-Certificate.jpg"
+            ];
 
-            loadImages(
-                "clientGrid",
-                "https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/refs/heads/main/7photo/claints%20imegs.json",
-                [
-                    "https://via.placeholder.com/200x150?text=Client1",
-                    "https://via.placeholder.com/200x150?text=Client2",
-                    "https://via.placeholder.com/200x150?text=Client3",
-                    "https://via.placeholder.com/200x150?text=Client4",
-                    "https://via.placeholder.com/200x150?text=Client5",
-                    "https://via.placeholder.com/200x150?text=Client6",
-                    "https://via.placeholder.com/200x150?text=Client7",
-                    "https://via.placeholder.com/200x150?text=Client8",
-                    "https://via.placeholder.com/200x150?text=Client9",
-                    "https://via.placeholder.com/200x150?text=Client10",
-                    "https://via.placeholder.com/200x150?text=Client11",
-                    "https://via.placeholder.com/200x150?text=Client12"
-                ]
-            );
+            // Render all sections using the new function
+            renderImages("imageGrid", workImages, true);
+            renderImages("clientGrid", clientImages, true);
+            renderImages("awardsGrid", awardsImages, false);
         };
     </script>
 </body>
