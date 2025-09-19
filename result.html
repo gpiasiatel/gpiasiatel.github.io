@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Certificate Search</title>
+</head>
+<body>
+  <h2>Search Certificate by Registration Number</h2>
+  <input type="text" id="regInput" placeholder="Enter Registration Number">
+  <button onclick="searchReg()">Search</button>
+
+  <div id="result" style="margin-top:20px;"></div>
+
+  <script>
+    async function fetchSheetData() {
+      const url = "https://docs.google.com/spreadsheets/d/14M2VN-VIUkEeEzOHRYp7zmCcHOcuCJvFg_KEAkX1B-I/gviz/tq?tqx=out:json&gid=804996613";
+      const res = await fetch(url);
+      const text = await res.text();
+      // remove leading garbage so JSON parse works
+      const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}')+1);
+      const data = JSON.parse(jsonText);
+      const rows = data.table.rows;
+      const headers = data.table.cols.map(c => c.label);
+      return { headers, rows };
+    }
+
+    async function searchReg() {
+      const reg = document.getElementById('regInput').value.trim();
+      if (!reg) {
+        document.getElementById('result').innerHTML = "Please enter a registration number.";
+        return;
+      }
+
+      const { headers, rows } = await fetchSheetData();
+      let foundRow = null;
+      for (const row of rows) {
+        // find registration_number column
+        // assuming it's the first column: index 0
+        const cell = row[0]; 
+        const cellValue = cell && cell.v ? cell.v.toString().trim() : "";
+        if (cellValue === reg) {
+          foundRow = row;
+          break;
+        }
+      }
+
+      if (!foundRow) {
+        document.getElementById('result').innerHTML = "No certificate found for registration number: " + reg;
+        return;
+      }
+
+      // map header names to values
+      const obj = {};
+      headers.forEach((h, i) => {
+        obj[h] = foundRow[i] && foundRow[i].v ? foundRow[i].v : "";
+      });
+
+      // show result
+      document.getElementById('result').innerHTML = `
+        <div>
+          <h3>${obj.name}</h3>
+          <p><strong>Designation:</strong> ${obj.designation}</p>
+          <p><strong>Company:</strong> ${obj.company}</p>
+          <img src="${obj.photo_url}" alt="Photo" style="max-width:150px;margin-bottom:10px;"><br>
+          <img src="${obj.logo_url}" alt="Logo" style="max-width:100px;"><br>
+          <p><strong>Father Name:</strong> ${obj.father_name}</p>
+          <p><strong>Project Name:</strong> ${obj.project_name}</p>
+          <p><strong>Workplace Address:</strong> ${obj.workplace_address}</p>
+          <p><strong>Start Date:</strong> ${obj.start_date}</p>
+          <p><strong>Deadline:</strong> ${obj.deadline}</p>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
