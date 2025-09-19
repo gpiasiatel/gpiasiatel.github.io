@@ -1,75 +1,265 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-  <title>Certificate Search</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>সার্টিফিকেট ফলাফল</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+/* Same styles as before */
+body { font-family: 'SolaimanLipi', sans-serif; background: #FFFFFF; margin: 0; padding: 20px; text-align:center; }
+a { color: #2980b9; text-decoration: none; }
+a:hover { text-decoration: underline; }
+#loader { text-align: center; padding: 50px; font-size: 20px; color: #555; }
+.not-found { text-align: center; padding: 50px; color: #e74c3c; }
+.certificate-container { max-width: 900px; margin: 20px auto; background: #fff; border-radius: 15px; box-shadow: 0 12px 30px rgba(0,0,0,0.2); overflow: hidden; padding-bottom: 40px; position: relative; }
+.certificate-container::before {
+  content: "";
+  position: absolute; top: 50%; left: 50%; width: 500px; height: 500px;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
+  background-repeat: no-repeat; background-position: center; background-size: contain;
+  opacity: 0.08; filter: blur(1px); z-index: 0;
+}
+.certificate-container > * { position: relative; z-index: 1; }
+.lang-toggle { text-align: right; margin-bottom: 10px; max-width: 900px; margin-left: auto; margin-right: auto; }
+.lang-toggle button { padding: 5px 12px; margin-left: 5px; cursor:pointer; border-radius:5px; border:none; background:#2980b9; color:white; }
+.lang-toggle button:disabled { background: #555; cursor: not-allowed; }
+
+.cert-header { background-color: #ffffff; padding: 20px; text-align: center; }
+.company-logo { max-height: 80px; object-fit: contain; }
+.cert-body { display: flex; align-items: center; padding: 30px 20px; gap: 20px; flex-wrap: wrap; }
+.profile-picture-container { flex: 0 0 150px; text-align: center; }
+.profile-picture { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #2980b9; }
+.person-info { flex: 1; text-align:left; }
+.person-info .name { font-size: 28px; margin: 0; color: #2c3e50; font-weight: bold; }
+.person-info .designation { font-size: 20px; margin: 5px 0; color: #2980b9; }
+.person-info .company { font-size: 18px; color: #555; }
+.cert-details { margin: 20px; padding: 10px; }
+.detail-item { padding: 10px 0; border-bottom: 1px dashed #bdc3c7; font-size: 16px; display:flex; justify-content:space-between; }
+.detail-key { font-weight: bold; color: #34495e; }
+.detail-value { color: #2c3e50; }
+.cert-footer { display: flex; justify-content: space-between; align-items: center; margin: 20px; padding: 10px 20px; color: #7f8c8d; font-size: 14px; }
+.qr-code { width: 90px; height: 90px; }
+.reg-number { font-weight: bold; font-size: 20px; color: #2c3e50; }
+
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 5px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  background: #2980b9;
+  color: white;
+  font-size: 16px;
+  z-index: 1000;
+}
+.back-button:hover { background: #1f6391; }
+
+@media print { 
+  body { background-color: #fff; } 
+  .certificate-container { box-shadow: none; margin: 0; }
+  .certificate-container::before { opacity: 0.05; }
+  #loader, .not-found, .back-button { display: none; } 
+}
+@media (max-width: 600px) { 
+  .cert-body { flex-direction: column; align-items: center; text-align: center; } 
+  .person-info { text-align: center; } 
+  .cert-footer { flex-direction: column; gap: 10px; align-items: center; } 
+  .detail-item { flex-direction: column; text-align:center; } 
+}
+</style>
 </head>
 <body>
-  <h2>Search Certificate by Registration Number</h2>
-  <input type="text" id="regInput" placeholder="Enter Registration Number">
-  <button onclick="searchReg()">Search</button>
 
-  <div id="result" style="margin-top:20px;"></div>
+<button class="back-button" onclick="window.location.href='index.html'"> Home </button>
 
-  <script>
-    async function fetchSheetData() {
-      const url = "https://docs.google.com/spreadsheets/d/14M2VN-VIUkEeEzOHRYp7zmCcHOcuCJvFg_KEAkX1B-I/gviz/tq?tqx=out:json&gid=804996613";
-      const res = await fetch(url);
-      const text = await res.text();
-      // remove leading garbage so JSON parse works
-      const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}')+1);
-      const data = JSON.parse(jsonText);
-      const rows = data.table.rows;
-      const headers = data.table.cols.map(c => c.label);
-      return { headers, rows };
+<div class="lang-toggle">
+  <button onclick="loadCertificate('bn')">বাংলা</button>
+  <button onclick="loadCertificate('en')">English</button>
+  <button id="download-btn" onclick="generateMultiLanguagePdf()">ডাউনলোড PDF</button>
+</div>
+
+<div class="certificate-container" id="certificate-container">
+  <div id="loader">লোড হচ্ছে...</div>
+</div>
+
+<div id="not-found" class="not-found" style="display: none;">
+  <h2 id="nf-title">দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।</h2>
+  <p id="nf-msg">আপনার দেওয়া রেজিস্ট্রেশন নম্বরটি সঠিক নয়। অনুগ্রহ করে আবার চেষ্টা করুন।</p>
+  <a href="index.html" id="nf-link">সার্চ পেজে ফিরে যান</a>
+</div>
+
+<script>
+const sheetID = '14M2VN-VIUkEeEzOHRYp7zmCcHOcuCJvFg_KEAkX1B-I';
+const gidBN = '804996613'; // বাংলা শিট gid
+const gidEN = '804996613'; // English শিট gid (একই শিট হলেও আলাদা চাইলে আলাদা gid)
+
+const dataFiles = {
+    'bn': `https://docs.google.com/spreadsheets/d/${14M2VN-VIUkEeEzOHRYp7zmCcHOcuCJvFg_KEAkX1B-I}/gviz/tq?tqx=out:json&gid=${804996613}`,
+    'en': `https://docs.google.com/spreadsheets/d/${14M2VN-VIUkEeEzOHRYp7zmCcHOcuCJvFg_KEAkX1B-I}/gviz/tq?tqx=out:json&gid=${804996613}`
+};
+
+let currentLang = 'bn';
+const urlParams = new URLSearchParams(window.location.search);
+const regNumber = urlParams.get('reg');
+const certificateContainer = document.getElementById('certificate-container');
+const loader = document.getElementById('loader');
+const notFound = document.getElementById('not-found');
+const downloadBtn = document.getElementById('download-btn');
+
+function updateNotFoundText() {
+    if (currentLang === 'bn') {
+        document.getElementById('nf-title').textContent = 'দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।';
+        document.getElementById('nf-msg').textContent = 'আপনার দেওয়া রেজিস্ট্রেশন নম্বরটি সঠিক নয়। অনুগ্রহ করে আবার চেষ্টা করুন।';
+        document.getElementById('nf-link').textContent = 'সার্চ পেজে ফিরে যান';
+    } else {
+        document.getElementById('nf-title').textContent = 'Sorry, no result found.';
+        document.getElementById('nf-msg').textContent = 'The registration number you entered is invalid. Please try again.';
+        document.getElementById('nf-link').textContent = 'Go back to search page';
     }
+}
 
-    async function searchReg() {
-      const reg = document.getElementById('regInput').value.trim();
-      if (!reg) {
-        document.getElementById('result').innerHTML = "Please enter a registration number.";
-        return;
-      }
+async function fetchSheetData(lang) {
+    const url = dataFiles[lang];
+    const res = await fetch(url);
+    const text = await res.text();
+    const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}')+1);
+    const sheetData = JSON.parse(jsonText);
+    const rows = sheetData.table.rows;
+    const headers = sheetData.table.cols.map(c => c.label);
+    return rows.map(r => {
+        const obj = {};
+        r.c.forEach((cell,i)=> obj[headers[i]] = cell && cell.v ? cell.v : '');
+        return obj;
+    });
+}
 
-      const { headers, rows } = await fetchSheetData();
-      let foundRow = null;
-      for (const row of rows) {
-        // find registration_number column
-        // assuming it's the first column: index 0
-        const cell = row[0]; 
-        const cellValue = cell && cell.v ? cell.v.toString().trim() : "";
-        if (cellValue === reg) {
-          foundRow = row;
-          break;
+async function loadCertificate(lang) {
+    currentLang = lang;
+    loader.style.display = 'block';
+    downloadBtn.style.display = 'none';
+    certificateContainer.style.display = 'block';
+    certificateContainer.innerHTML = `<div id="loader">${lang === 'bn' ? 'লোড হচ্ছে...' : 'Loading...'}</div>`;
+    notFound.style.display = 'none';
+
+    try {
+        const data = await fetchSheetData(lang);
+        const person = data.find(item => item.registration_number && item.registration_number.toLowerCase() === regNumber.toLowerCase());
+        loader.style.display = 'none';
+        if(person) {
+            displayCertificate(person, lang, certificateContainer);
+            downloadBtn.style.display = 'inline-block';
+        } else {
+            certificateContainer.style.display = 'none';
+            notFound.style.display = 'block';
+            updateNotFoundText();
         }
-      }
-
-      if (!foundRow) {
-        document.getElementById('result').innerHTML = "No certificate found for registration number: " + reg;
-        return;
-      }
-
-      // map header names to values
-      const obj = {};
-      headers.forEach((h, i) => {
-        obj[h] = foundRow[i] && foundRow[i].v ? foundRow[i].v : "";
-      });
-
-      // show result
-      document.getElementById('result').innerHTML = `
-        <div>
-          <h3>${obj.name}</h3>
-          <p><strong>Designation:</strong> ${obj.designation}</p>
-          <p><strong>Company:</strong> ${obj.company}</p>
-          <img src="${obj.photo_url}" alt="Photo" style="max-width:150px;margin-bottom:10px;"><br>
-          <img src="${obj.logo_url}" alt="Logo" style="max-width:100px;"><br>
-          <p><strong>Father Name:</strong> ${obj.father_name}</p>
-          <p><strong>Project Name:</strong> ${obj.project_name}</p>
-          <p><strong>Workplace Address:</strong> ${obj.workplace_address}</p>
-          <p><strong>Start Date:</strong> ${obj.start_date}</p>
-          <p><strong>Deadline:</strong> ${obj.deadline}</p>
-        </div>
-      `;
+    } catch(error){
+        loader.style.display = 'none';
+        certificateContainer.innerHTML = '<p style="color:red;text-align:center;">Data could not be loaded. Please try again.</p>';
+        console.error(error);
     }
-  </script>
+}
+
+function displayCertificate(person, lang, targetElement) {
+    let detailsHtml = '';
+    if(person.details) {
+        for(const key in person.details) {
+            detailsHtml += `<div class="detail-item"><span class="detail-key">${key}</span><span class="detail-value">${person.details[key]}</span></div>`;
+        }
+    }
+    targetElement.innerHTML = `
+      <header class="cert-header">
+        <img src="${person.logo_url || ''}?raw=true" alt="Company Logo" class="company-logo" onerror="this.style.display='none'">
+      </header>
+      <main class="cert-body">
+        <div class="profile-picture-container">
+          <img src="${person.photo_url || ''}?raw=true" alt="Profile Photo" class="profile-picture" onerror="this.style.display='none'">
+        </div>
+        <div class="person-info">
+          <h1 class="name">${person.name}</h1>
+          <p class="designation">${person.designation}</p>
+          <p class="company">${person.company}</p>
+        </div>
+      </main>
+      <section class="cert-details">${detailsHtml}</section>
+      <footer class="cert-footer">
+        <div class="reg-number">${lang==='bn'?'রেজিস্ট্রেশন নম্বর':'Registration No'}: ${person.registration_number || 'N/A'}</div>
+        <div class="qr-code"></div>
+      </footer>
+    `;
+    const qrCodeElement = targetElement.querySelector(".qr-code");
+    if(qrCodeElement){
+        qrCodeElement.innerHTML = '';
+        new QRCode(qrCodeElement, { text: window.location.href, width: 80, height: 80 });
+    }
+}
+
+async function generateMultiLanguagePdf() {
+    if(!regNumber){ alert('No registration number found.'); return; }
+    const originalBtnText = downloadBtn.innerHTML;
+    downloadBtn.disabled = true;
+    downloadBtn.innerHTML = 'প্রসেসিং...';
+    try{
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+        const tempContainer = document.createElement('div');
+        tempContainer.className = 'certificate-container';
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px';
+        tempContainer.style.top = '0';
+        tempContainer.style.width = '900px';
+        document.body.appendChild(tempContainer);
+
+        const [bnData,enData] = await Promise.all([fetchSheetData('bn'), fetchSheetData('en')]);
+        const bnPerson = bnData.find(item => item.registration_number.toLowerCase() === regNumber.toLowerCase());
+        const enPerson = enData.find(item => item.registration_number.toLowerCase() === regNumber.toLowerCase());
+        if(!bnPerson || !enPerson) throw new Error('Data not found');
+
+        const addCanvasToPdf = async (person, lang) => {
+            displayCertificate(person, lang, tempContainer);
+            await new Promise(resolve=>{
+                const images = tempContainer.querySelectorAll('img');
+                let loaded=0;
+                if(images.length===0){resolve();return;}
+                images.forEach(img=>{ if(img.complete){loaded++;}else{img.onload=img.onerror=()=>{loaded++;if(loaded===images.length) resolve();} }});
+                if(loaded===images.length) resolve();
+            });
+            await new Promise(r=>setTimeout(r,300));
+            const canvas = await html2canvas(tempContainer, { scale:2, useCORS:true, allowTaint:true });
+            const imgData = canvas.toDataURL('image/png');
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const ratio = imgProps.width / imgProps.height;
+            let imgHeight = pdfWidth / ratio;
+            if(imgHeight > pdfHeight) imgHeight = pdfHeight;
+            pdf.addImage(imgData,'PNG',0,0,pdfWidth,imgHeight);
+        };
+
+        await addCanvasToPdf(bnPerson,'bn');
+        pdf.addPage();
+        await addCanvasToPdf(enPerson,'en');
+        pdf.save(`Certificate-${regNumber}.pdf`);
+        document.body.removeChild(tempContainer);
+    }catch(error){ console.error(error); alert('দুঃখিত, PDF তৈরি করা সম্ভব হয়নি।'); }
+    finally{ downloadBtn.disabled=false; downloadBtn.innerHTML=originalBtnText; }
+}
+
+if(regNumber) loadCertificate('bn');
+else{
+    loader.style.display='none';
+    downloadBtn.style.display='none';
+    notFound.style.display='block';
+    updateNotFoundText();
+}
+</script>
 </body>
 </html>
