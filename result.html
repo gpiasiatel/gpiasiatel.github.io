@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সার্টিফিকেট ফলাফল</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/7photo/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            color: #333;
+        }
+        a { color: #2980b9; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        #loader { text-align: center; padding: 50px; font-size: 20px; color: #555; }
+        .not-found { text-align: center; padding: 50px; color: #e74c3c; }
+        .certificate-container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            padding-bottom: 40px;
+            position: relative;
+        }
+        .certificate-container::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 500px;
+            height: 500px;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.08;
+            filter: blur(1px);
+            z-index: 0;
+        }
+        .certificate-container > * { position: relative; z-index: 1; }
+        .lang-toggle { text-align: right; margin-bottom: 10px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        .lang-toggle button {
+            padding: 8px 16px;
+            margin-left: 10px;
+            cursor:pointer;
+            border-radius: 8px;
+            border: none;
+            background: #2980b9;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .lang-toggle button:hover:enabled { background: #1f6391; }
+        .lang-toggle button:disabled { background: #95a5a6; cursor: not-allowed; }
+        .cert-header { background-color: #ffffff; padding: 20px; text-align: center; }
+        .company-logo { max-height: 80px; object-fit: contain; }
+        .cert-body { display: flex; align-items: center; padding: 30px 20px; gap: 20px; flex-wrap: wrap; }
+        .profile-picture-container { flex: 0 0 150px; text-align: center; }
+        .profile-picture { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid #3498db; }
+        .person-info { flex: 1; text-align:left; }
+        .person-info .name { font-size: 28px; margin: 0; color: #2c3e50; font-weight: bold; }
+        .person-info .designation { font-size: 20px; margin: 5px 0; color: #2980b9; }
+        .person-info .company { font-size: 18px; color: #555; }
+        .cert-details { margin: 20px; padding: 10px; }
+        .detail-item { padding: 10px 0; border-bottom: 1px dashed #bdc3c7; font-size: 16px; display:flex; justify-content:space-between; }
+        .detail-key { font-weight: bold; color: #34495e; }
+        .detail-value { color: #2c3e50; }
+        .cert-footer { display: flex; justify-content: space-between; align-items: center; margin: 20px; padding: 10px 20px; color: #7f8c8d; font-size: 14px; }
+        .qr-code { width: 90px; height: 90px; }
+        .reg-number { font-weight: bold; font-size: 20px; color: #2c3e50; }
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            border: none;
+            background: #34495e;
+            color: white;
+            font-size: 16px;
+            z-index: 1000;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .back-button:hover { background: #2c3e50; }
+        @media print {
+            body { background-color: #fff; }
+            .certificate-container { box-shadow: none; margin: 0; }
+            .certificate-container::before { opacity: 0.05; }
+            #loader, .not-found, .back-button, .lang-toggle, #download-btn { display: none; }
+        }
+        @media (max-width: 600px) {
+            .cert-body { flex-direction: column; align-items: center; text-align: center; }
+            .person-info { text-align: center; }
+            .cert-footer { flex-direction: column; gap: 10px; align-items: center; }
+            .detail-item { flex-direction: column; text-align:center; }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.location.href='index.html'">Go Back</button>
+    <div class="lang-toggle">
+        <button id="bn-btn" onclick="loadCertificate('bn')">বাংলা</button>
+        <button id="en-btn" onclick="loadCertificate('en')">English</button>
+        <button id="download-btn" onclick="generatePdf()">Download PDF</button>
+    </div>
+    <div class="certificate-container" id="certificate-container">
+        <div id="loader">লোড হচ্ছে...</div>
+    </div>
+    <div id="not-found" class="not-found" style="display: none;">
+        <h2 id="nf-title">দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।</h2>
+        <p id="nf-msg">আপনার দেওয়া রেজিস্ট্রেশন নম্বরটি সঠিক নয়। অনুগ্রহ করে আবার চেষ্টা করুন।</p>
+        <a href="index.html" id="nf-link">সার্চ পেজে ফিরে যান</a>
+    </div>
+    <script>
+        const dataFiles = {
+            'bn': 'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/foldername/databangla.json',
+            'en': 'https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/foldername/dataenglish.json'
+        };
+        let currentLang = 'bn';
+        const urlParams = new URLSearchParams(window.location.search);
+        const regNumber = urlParams.get('reg');
+        const certificateContainer = document.getElementById('certificate-container');
+        const loader = document.getElementById('loader');
+        const notFound = document.getElementById('not-found');
+        const downloadBtn = document.getElementById('download-btn');
+        const bnBtn = document.getElementById('bn-btn');
+        const enBtn = document.getElementById('en-btn');
+        function updateNotFoundText() {
+            if (currentLang === 'bn') {
+                document.getElementById('nf-title').textContent = 'দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।';
+                document.getElementById('nf-msg').textContent = 'আপনার দেওয়া রেজিস্ট্রেশন নম্বরটি সঠিক নয়। অনুগ্রহ করে আবার চেষ্টা করুন।';
+                document.getElementById('nf-link').textContent = 'সার্চ পেজে ফিরে যান';
+                bnBtn.textContent = 'বাংলা';
+                enBtn.textContent = 'English';
+                downloadBtn.textContent = 'ডাউনলোড PDF';
+            } else {
+                document.getElementById('nf-title').textContent = 'Sorry, no result found.';
+                document.getElementById('nf-msg').textContent = 'The registration number you entered is invalid. Please try again.';
+                document.getElementById('nf-link').textContent = 'Go back to search page';
+                bnBtn.textContent = 'Bengali';
+                enBtn.textContent = 'ইংরেজি';
+                downloadBtn.textContent = 'Download PDF';
+            }
+        }
+        async function loadCertificate(lang) {
+            currentLang = lang;
+            loader.style.display = 'block';
+            downloadBtn.style.display = 'none';
+            certificateContainer.style.display = 'block';
+            certificateContainer.innerHTML = `<div id="loader">${lang === 'bn' ? 'লোড হচ্ছে...' : 'Loading...'}</div>`;
+            notFound.style.display = 'none';
+            try {
+                const response = await fetch(dataFiles[lang]);
+                if (!response.ok) throw new Error('Network error');
+                const data = await response.json();
+                const person = data.find(item => item.registration_number && item.registration_number.toLowerCase() === regNumber.toLowerCase());
+                loader.style.display = 'none';
+                if (person) {
+                    displayCertificate(person, lang, certificateContainer);
+                    downloadBtn.style.display = 'inline-block';
+                } else {
+                    certificateContainer.style.display = 'none';
+                    notFound.style.display = 'block';
+                    updateNotFoundText();
+                }
+            } catch (error) {
+                loader.style.display = 'none';
+                certificateContainer.innerHTML = `<p style="color:red;text-align:center;">${lang === 'bn' ? 'ডেটা লোড করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।' : 'Data could not be loaded. Please try again.'}</p>`;
+                console.error(error);
+            }
+        }
+        function displayCertificate(person, lang, targetElement) {
+            let detailsHtml = '';
+            if (person.details) {
+                for (const key in person.details) {
+                    detailsHtml += `<div class="detail-item"><span class="detail-key">${key}</span><span class="detail-value">${person.details[key]}</span></div>`;
+                }
+            }
+            const bnText = lang === 'bn' ? 'বাংলা' : 'Bengali';
+            const enText = lang === 'bn' ? 'English' : 'ইংরেজি';
+            const downloadText = lang === 'bn' ? 'ডাউনলোড PDF' : 'Download PDF';
+            const regText = lang === 'bn' ? 'রেজিস্ট্রেশন নম্বর' : 'Registration No';
+            const backBtnText = lang === 'bn' ? 'হোম' : 'Go Back';
+            document.getElementById('bn-btn').textContent = bnText;
+            document.getElementById('en-btn').textContent = enText;
+            document.getElementById('download-btn').textContent = downloadText;
+            document.querySelector('.back-button').textContent = backBtnText;
+            targetElement.innerHTML = `
+                <header class="cert-header">
+                    <img src="${person.logo_url || ''}?raw=true" alt="Company Logo" class="company-logo" onerror="this.style.display='none'">
+                </header>
+                <main class="cert-body">
+                    <div class="profile-picture-container">
+                        <img src="${person.photo_url || ''}?raw=true" alt="Profile Photo" class="profile-picture" onerror="this.style.display='none'">
+                    </div>
+                    <div class="person-info">
+                        <h1 class="name">${person.name}</h1>
+                        <p class="designation">${person.designation}</p>
+                        <p class="company">${person.company}</p>
+                    </div>
+                </main>
+                <section class="cert-details">${detailsHtml}</section>
+                <footer class="cert-footer">
+                    <div class="reg-number">${regText}: ${person.registration_number || 'N/A'}</div>
+                    <div class="qr-code"></div>
+                </footer>
+            `;
+            const qrCodeElement = targetElement.querySelector(".qr-code");
+            if (qrCodeElement) {
+                qrCodeElement.innerHTML = '';
+                new QRCode(qrCodeElement, { text: window.location.href, width: 80, height: 80 });
+            }
+        }
+        async function generatePdf() {
+            const originalBtnText = downloadBtn.textContent;
+            downloadBtn.disabled = true;
+            downloadBtn.textContent = 'Processing...';
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+                const tempContainer = document.createElement('div');
+                tempContainer.className = 'certificate-container';
+                tempContainer.style.position = 'absolute';
+                tempContainer.style.left = '-9999px';
+                tempContainer.style.top = '0';
+                tempContainer.style.width = '900px';
+                document.body.appendChild(tempContainer);
+                const languages = ['bn', 'en'];
+                for (let i = 0; i < languages.length; i++) {
+                    const lang = languages[i];
+                    const response = await fetch(dataFiles[lang]);
+                    const data = await response.json();
+                    const person = data.find(item => item.registration_number.toLowerCase() === regNumber.toLowerCase());
+                    if (!person) continue;
+                    displayCertificate(person, lang, tempContainer);
+                    await new Promise(resolve => {
+                        const images = tempContainer.querySelectorAll('img');
+                        let imagesLoaded = 0;
+                        if (images.length === 0) {
+                            resolve();
+                            return;
+                        }
+                        images.forEach(img => {
+                            if (img.complete) {
+                                imagesLoaded++;
+                            } else {
+                                img.onload = () => { imagesLoaded++; if (imagesLoaded === images.length) resolve(); };
+                                img.onerror = () => { imagesLoaded++; if (imagesLoaded === images.length) resolve(); };
+                            }
+                        });
+                        if (imagesLoaded === images.length) resolve();
+                    });
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    const canvas = await html2canvas(tempContainer, {
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: true,
+                        ignoreElements: (element) => element.classList.contains('lang-toggle')
+                    });
+                    const imgData = canvas.toDataURL('image/png');
+                    if (i > 0) pdf.addPage();
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    const ratio = imgProps.width / imgProps.height;
+                    let imgHeight = pdfWidth / ratio;
+                    pdf.addImage(imgData, 'PNG', 0, (pdfHeight - imgHeight) / 2, pdfWidth, imgHeight);
+                }
+                pdf.save(`Certificate-${regNumber}.pdf`);
+                document.body.removeChild(tempContainer);
+            } catch (error) {
+                console.error('PDF Generation Failed:', error);
+                alert('দুঃখিত, PDF তৈরি করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।');
+            } finally {
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = originalBtnText;
+            }
+        }
+        if (regNumber) {
+            loadCertificate('bn');
+        } else {
+            loader.style.display = 'none';
+            downloadBtn.style.display = 'none';
+            notFound.style.display = 'block';
+            updateNotFoundText();
+        }
+    </script>
+</body>
+</html>
