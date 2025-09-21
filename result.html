@@ -175,10 +175,10 @@
                 margin: 0;
                 border-radius: 0;
                 background-image: none;
-                padding: 20mm; /* A4 size professional margin */
+                padding: 15mm; /* Adjusted padding for a smaller margin */
                 border: none;
-                width: 210mm; /* A4 width */
-                min-height: 297mm; /* A4 height */
+                width: 210mm;
+                min-height: 297mm;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
@@ -186,18 +186,22 @@
             }
             .certificate-container::before { opacity: 0.04; width: 400px; height: 400px; }
             #loader, .not-found, .back-button, .lang-toggle, #download-btn { display: none; }
-            .cert-header { padding-top: 0; border-bottom: 1px solid #1e40af; margin-bottom: 10mm; }
-            .company-logo { max-height: 40px; }
-            .cert-body { padding: 0; margin-bottom: 10mm; }
-            .profile-picture { width: 90px; height: 90px; border: 3px solid #1e40af; }
-            .person-info .name { font-size: 24px; }
-            .person-info .designation { font-size: 16px; }
-            .person-info .company { font-size: 14px; }
+            .cert-header { padding-top: 0; border-bottom: 1px solid #1e40af; margin-bottom: 8mm; }
+            .company-logo { max-height: 35px; /* Slightly smaller for print */ }
+            .cert-body { padding: 0; margin-bottom: 8mm; }
+            .profile-picture { width: 80px; /* Slightly smaller for print */
+                height: 80px; /* Slightly smaller for print */
+                border: 3px solid #1e40af; }
+            .person-info .name { font-size: 20px; /* Adjusted for smaller size */ }
+            .person-info .designation { font-size: 14px; /* Adjusted for smaller size */ }
+            .person-info .company { font-size: 12px; /* Adjusted for smaller size */ }
             .cert-details { margin: 0; padding: 0; }
-            .detail-item { font-size: 14px; padding: 8px 0; }
-            .cert-footer { margin-top: 15mm; padding-top: 10mm; border-top: 1px solid #1e40af; }
-            .reg-number { font-size: 16px; }
-            .qr-code { width: 60px; height: 60px; }
+            .detail-item { font-size: 12px; /* Adjusted for smaller size */
+                padding: 6px 0; }
+            .cert-footer { margin-top: 10mm; padding-top: 8mm; border-top: 1px solid #1e40af; }
+            .reg-number { font-size: 14px; /* Adjusted for smaller size */ }
+            .qr-code { width: 50px; /* Adjusted for smaller size */
+                height: 50px; /* Adjusted for smaller size */ }
         }
 
         @media (max-width: 600px) {
@@ -382,12 +386,12 @@
                     await new Promise(resolve => setTimeout(resolve, 300));
 
                     const canvas = await html2canvas(tempContainer, {
-                        scale: 3, /* Increased scale for even better resolution */
+                        scale: 3,
                         useCORS: true,
                         allowTaint: true,
                         ignoreElements: (element) => element.classList.contains('lang-toggle')
                     });
-                    const imgData = canvas.toDataURL('image/jpeg', 1.0); /* Set quality to maximum */
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
 
                     if (i > 0) pdf.addPage();
                     const imgProps = pdf.getImageProperties(imgData);
