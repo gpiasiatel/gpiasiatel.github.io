@@ -42,8 +42,8 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 500px;
-            height: 500px;
+            width: 600px; /* Increased size for subtle watermark */
+            height: 600px;
             transform: translate(-50%, -50%) rotate(-15deg);
             background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/7photo/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
             background-repeat: no-repeat;
@@ -81,7 +81,8 @@
             align-items: center;
             gap: 15px;
         }
-        .company-logo { max-height: 50px; object-fit: contain; }
+        .company-logo { max-height: 70px; /* Increased logo size */
+            object-fit: contain; }
 
         .cert-body {
             display: flex;
@@ -90,17 +91,33 @@
             text-align: left;
             padding: 20px 0;
         }
-        .profile-picture { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #1e40af; }
+        .profile-picture { width: 150px; /* Increased photo size */
+            height: 150px; /* Increased photo size */
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #1e40af; /* Slightly thicker border */
+        }
         .person-info { margin-top: 10px; }
-        .person-info .name { font-size: 26px; margin: 0; color: #2c3e50; font-weight: bold; }
-        .person-info .designation { font-size: 18px; margin: 5px 0; color: #1e40af; }
-        .person-info .company { font-size: 16px; color: #555; }
+        .person-info .name { font-size: 32px; /* Increased font size */
+            margin: 0;
+            color: #2c3e50;
+            font-weight: bold; }
+        .person-info .designation { font-size: 22px; /* Increased font size */
+            margin: 5px 0;
+            color: #1e40af; }
+        .person-info .company { font-size: 18px; /* Increased font size */
+            color: #555; }
 
         .cert-details {
-            margin: 40px 0;
+            margin: 50px 0; /* Increased margin */
             padding: 20px;
         }
-        .detail-item { padding: 10px 0; border-bottom: 1px dashed #e0e0e0; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .detail-item { padding: 12px 0; /* Increased padding */
+            border-bottom: 1px dashed #e0e0e0;
+            font-size: 18px; /* Increased font size */
+            display: flex;
+            justify-content: space-between;
+            align-items: center; }
         .detail-item:last-child { border-bottom: none; }
         .detail-key { font-weight: bold; color: #2c3e50; }
         .detail-value { color: #555; }
@@ -109,13 +126,17 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: 40px;
-            padding-top: 20px;
+            margin-top: 50px; /* Increased margin */
+            padding-top: 25px;
             border-top: 1px solid #1e40af;
         }
-        .qr-code { width: 100px; height: 100px; }
-        .reg-number { font-weight: bold; font-size: 18px; color: #2c3e50; text-align: right; }
-        .footer-logo { max-height: 40px; object-fit: contain; }
+        .qr-code { width: 120px; /* Increased QR code size */
+            height: 120px; /* Increased QR code size */
+        }
+        .reg-number { font-weight: bold; font-size: 22px; /* Increased font size */
+            color: #2c3e50;
+            text-align: right; }
+        .footer-logo { max-height: 50px; object-fit: contain; }
 
         .back-button {
             position: fixed;
@@ -137,13 +158,13 @@
 
         @media print {
             body { background-color: #fff; margin: 0; padding: 0; font-family: 'Noto Sans Bengali', sans-serif; }
-            .certificate-container { 
-                box-shadow: none; 
-                margin: 0; 
-                border-radius: 0; 
-                background-image: none; 
+            .certificate-container {
+                box-shadow: none;
+                margin: 0;
+                border-radius: 0;
+                background-image: none;
                 padding: 10mm 15mm;
-                border: none; 
+                border: none;
                 width: 210mm;
                 min-height: 297mm;
                 display: flex;
@@ -300,7 +321,7 @@
             const qrCodeElement = targetElement.querySelector(".qr-code");
             if (qrCodeElement) {
                 qrCodeElement.innerHTML = '';
-                new QRCode(qrCodeElement, { text: window.location.href, width: 90, height: 90 });
+                new QRCode(qrCodeElement, { text: window.location.href, width: 110, height: 110 }); /* Adjusted for larger size */
             }
         }
 
@@ -349,13 +370,13 @@
                     await new Promise(resolve => setTimeout(resolve, 300));
 
                     const canvas = await html2canvas(tempContainer, {
-                        scale: 2,
+                        scale: 2.5, /* Increased scale for much better resolution */
                         useCORS: true,
                         allowTaint: true,
                         ignoreElements: (element) => element.classList.contains('lang-toggle')
                     });
-                    const imgData = canvas.toDataURL('image/jpeg', 0.8);
-                    
+                    const imgData = canvas.toDataURL('image/jpeg', 0.9); /* Increased quality to 90% */
+
                     if (i > 0) pdf.addPage();
                     const imgProps = pdf.getImageProperties(imgData);
                     const pdfWidth = pdf.internal.pageSize.getWidth();
