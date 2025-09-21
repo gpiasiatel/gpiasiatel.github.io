@@ -22,7 +22,7 @@
             flex-direction: column;
             align-items: center;
             margin: 0;
-            padding: 1.5rem;
+            padding: 1rem; /* Reduced padding */
             color: #1f2937;
         }
         a { 
@@ -50,13 +50,13 @@
             margin: 1rem auto; 
         }
         .certificate-container {
-            max-width: 64rem;
-            margin: 2rem auto;
+            max-width: 900px; /* Adjusted for a wider view */
+            margin: 1rem auto; /* Adjusted margin */
             background: #ffffff;
             border-radius: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); /* Lighter shadow */
             overflow: hidden;
-            padding: 2rem;
+            padding: 2.5rem; /* Adjusted padding */
             position: relative;
             border: 1px solid #e5e7eb;
         }
@@ -68,7 +68,7 @@
             width: 24rem;
             height: 24rem;
             transform: translate(-50%, -50%) rotate(-10deg);
-            background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
+            background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/7photo/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
@@ -83,7 +83,7 @@
         .lang-toggle { 
             display: flex; 
             justify-content: flex-end; 
-            max-width: 64rem; 
+            max-width: 900px; /* Matched with certificate width */
             margin: 1rem auto; 
             gap: 0.5rem; 
         }
@@ -208,6 +208,8 @@
             background: #1f2937; 
             transform: translateY(-1px); 
         }
+
+        /* Print-specific styles */
         @media print {
             body { 
                 background: #fff; 
@@ -215,13 +217,22 @@
             .certificate-container { 
                 box-shadow: none; 
                 margin: 0; 
-                border: none; 
+                border: none;
+                max-width: none;
+                padding: 15mm;
+                border: 1px solid #e5e7eb;
             }
             .certificate-container::before { 
                 opacity: 0.03; 
             }
             #loader, .not-found, .back-button, .lang-toggle, #download-btn { 
                 display: none; 
+            }
+            .cert-body { 
+                padding: 1rem; 
+            }
+            .cert-footer {
+                padding: 1rem;
             }
         }
         @media (max-width: 600px) {
@@ -278,6 +289,7 @@
         const downloadBtn = document.getElementById('download-btn');
         const bnBtn = document.getElementById('bn-btn');
         const enBtn = document.getElementById('en-btn');
+
         function updateNotFoundText() {
             if (currentLang === 'bn') {
                 document.getElementById('nf-title').textContent = 'দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।';
@@ -295,6 +307,7 @@
                 downloadBtn.textContent = 'Download PDF';
             }
         }
+
         async function loadCertificate(lang) {
             currentLang = lang;
             loader.style.display = 'block';
@@ -302,12 +315,14 @@
             certificateContainer.style.display = 'block';
             certificateContainer.innerHTML = `<div id="loader">${lang === 'bn' ? 'লোড হচ্ছে...' : 'Loading...'}</div>`;
             notFound.style.display = 'none';
+
             try {
                 const response = await fetch(dataFiles[lang]);
                 if (!response.ok) throw new Error('Network error');
                 const data = await response.json();
                 const person = data.find(item => item.registration_number && item.registration_number.toLowerCase() === regNumber.toLowerCase());
                 loader.style.display = 'none';
+
                 if (person) {
                     displayCertificate(person, lang, certificateContainer);
                     downloadBtn.style.display = 'inline-block';
@@ -322,6 +337,7 @@
                 console.error(error);
             }
         }
+
         function displayCertificate(person, lang, targetElement) {
             let detailsHtml = '';
             if (person.details) {
@@ -329,15 +345,18 @@
                     detailsHtml += `<div class="detail-item"><span class="detail-key">${key}</span><span class="detail-value">${person.details[key]}</span></div>`;
                 }
             }
+
             const bnText = lang === 'bn' ? 'বাংলা' : 'Bengali';
             const enText = lang === 'bn' ? 'English' : 'ইংরেজি';
             const downloadText = lang === 'bn' ? 'ডাউনলোড PDF' : 'Download PDF';
             const regText = lang === 'bn' ? 'রেজিস্ট্রেশন নম্বর' : 'Registration No';
             const backBtnText = lang === 'bn' ? 'হোম' : 'Go Back';
+
             document.getElementById('bn-btn').textContent = bnText;
             document.getElementById('en-btn').textContent = enText;
             document.getElementById('download-btn').textContent = downloadText;
             document.querySelector('.back-button').textContent = backBtnText;
+
             targetElement.innerHTML = `
                 <header class="cert-header">
                     <img src="${person.logo_url || ''}?raw=true" alt="Company Logo" class="company-logo" onerror="this.style.display='none'">
@@ -358,16 +377,19 @@
                     <div class="qr-code"></div>
                 </footer>
             `;
+
             const qrCodeElement = targetElement.querySelector(".qr-code");
             if (qrCodeElement) {
                 qrCodeElement.innerHTML = '';
                 new QRCode(qrCodeElement, { text: window.location.href, width: 80, height: 80 });
             }
         }
+
         async function generatePdf() {
             const originalBtnText = downloadBtn.textContent;
             downloadBtn.disabled = true;
             downloadBtn.textContent = 'Processing...';
+            
             try {
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
@@ -378,13 +400,15 @@
                 tempContainer.style.top = '0';
                 tempContainer.style.width = '900px';
                 document.body.appendChild(tempContainer);
+
                 const languages = ['bn', 'en'];
                 for (let i = 0; i < languages.length; i++) {
                     const lang = languages[i];
                     const response = await fetch(dataFiles[lang]);
                     const data = await response.json();
-                    const person = data.find(item => item.registration_number.toLowerCase() === regNumber.toLowerCase());
+                    const person = data.find(item => item.registration_number && item.registration_number.toLowerCase() === regNumber.toLowerCase());
                     if (!person) continue;
+                    
                     displayCertificate(person, lang, tempContainer);
                     await new Promise(resolve => {
                         const images = tempContainer.querySelectorAll('img');
@@ -404,21 +428,27 @@
                         if (imagesLoaded === images.length) resolve();
                     });
                     await new Promise(resolve => setTimeout(resolve, 300));
+                    
                     const canvas = await html2canvas(tempContainer, {
                         scale: 2,
                         useCORS: true,
                         allowTaint: true,
                         ignoreElements: (element) => element.classList.contains('lang-toggle')
                     });
-                    const imgData = canvas.toDataURL('image/png');
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    
                     if (i > 0) pdf.addPage();
                     const imgProps = pdf.getImageProperties(imgData);
                     const pdfWidth = pdf.internal.pageSize.getWidth();
                     const pdfHeight = pdf.internal.pageSize.getHeight();
                     const ratio = imgProps.width / imgProps.height;
                     let imgHeight = pdfWidth / ratio;
-                    pdf.addImage(imgData, 'PNG', 0, (pdfHeight - imgHeight) / 2, pdfWidth, imgHeight);
+                    
+                    // Center the image with a bit of margin
+                    const margin = 10;
+                    pdf.addImage(imgData, 'JPEG', margin, (pdfHeight - imgHeight) / 2, pdfWidth - (2 * margin), imgHeight - (2 * margin));
                 }
+                
                 pdf.save(`Certificate-${regNumber}.pdf`);
                 document.body.removeChild(tempContainer);
             } catch (error) {
@@ -429,6 +459,7 @@
                 downloadBtn.textContent = originalBtnText;
             }
         }
+        
         if (regNumber) {
             loadCertificate('bn');
         } else {
