@@ -153,30 +153,30 @@
                 margin: 0;
                 border-radius: 0;
                 background-image: none;
-                padding: 20mm; /* Adjusted padding for print */
+                padding: 20mm;
                 border: none;
-                width: 210mm; /* A4 width */
-                min-height: 297mm; /* A4 height */
+                width: 210mm;
+                min-height: 297mm;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between; /* Distributes content vertically */
-                box-sizing: border-box; /* Include padding in width/height */
+                justify-content: space-between;
+                box-sizing: border-box;
             }
             .certificate-container::before { opacity: 0.03; width: 400px; height: 400px; }
             #loader, .not-found, .back-button, .lang-toggle, #download-btn { display: none; }
 
-            .cert-header { padding-top: 0; border-bottom: 1px solid #d1d5db; margin-bottom: 15mm; } /* Adjusted margin for print */
-            .company-logo { max-height: 70px; } /* Slightly smaller logo for print */
-            .cert-body { padding: 0; margin-bottom: 15mm; } /* Adjusted margin for print */
-            .profile-picture { width: 120px; height: 120px; border: 3px solid #d1a95a; } /* Smaller photo for print */
-            .person-info .name { font-size: 28px; } /* Adjusted font sizes for print */
+            .cert-header { padding-top: 0; border-bottom: 1px solid #d1d5db; margin-bottom: 15mm; }
+            .company-logo { max-height: 70px; }
+            .cert-body { padding: 0; margin-bottom: 15mm; }
+            .profile-picture { width: 120px; height: 120px; border: 3px solid #d1a95a; }
+            .person-info .name { font-size: 28px; }
             .person-info .designation { font-size: 20px; }
             .person-info .company { font-size: 16px; }
-            .cert-details { margin: 0; padding: 10mm; border-radius: 0; border: 1px solid #e5e7eb; margin-bottom: 15mm; } /* Adjusted padding/margin for print */
+            .cert-details { margin: 0; padding: 10mm; border-radius: 0; border: 1px solid #e5e7eb; margin-bottom: 15mm; }
             .detail-item { font-size: 15px; padding: 8px 0; }
             .cert-footer { margin-top: 0; padding-top: 15mm; border-top: 1px solid #d1d5db; justify-content: space-around; }
             .reg-number { font-size: 18px; }
-            .qr-code { width: 70px; height: 70px; } /* Smaller QR for print */
+            .qr-code { width: 70px; height: 70px; }
         }
 
         @media (max-width: 600px) {
@@ -360,14 +360,21 @@
                     });
                     await new Promise(resolve => setTimeout(resolve, 300));
 
+                    // Hide QR code for html2canvas
+                    const qrCodeElement = tempContainer.querySelector('.qr-code');
+                    qrCodeElement.style.visibility = 'hidden';
+
                     const canvas = await html2canvas(tempContainer, {
-                        scale: 1.5,
+                        scale: 2, // Increased scale for better resolution
                         useCORS: true,
                         allowTaint: true,
                         ignoreElements: (element) => element.classList.contains('lang-toggle')
                     });
 
-                    const imgData = canvas.toDataURL('image/jpeg', 0.6);
+                    // Show QR code again
+                    qrCodeElement.style.visibility = 'visible';
+
+                    const imgData = canvas.toDataURL('image/jpeg', 0.8); // Increased quality to 80%
                     if (i > 0) pdf.addPage();
                     const imgProps = pdf.getImageProperties(imgData);
                     const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -375,6 +382,16 @@
                     const ratio = imgProps.width / imgProps.height;
                     let imgHeight = pdfWidth / ratio;
                     pdf.addImage(imgData, 'JPEG', 0, (pdfHeight - imgHeight) / 2, pdfWidth, imgHeight, undefined, 'FAST');
+                
+                    // Capture and add QR code separately for perfect quality
+                    const qrCanvas = qrCodeElement.querySelector('canvas');
+                    if (qrCanvas) {
+                        const qrImgData = qrCanvas.toDataURL('image/png');
+                        const qrImgProps = pdf.getImageProperties(qrImgData);
+                        const qrX = 145; // Adjust x position as needed
+                        const qrY = 240; // Adjust y position as needed
+                        pdf.addImage(qrImgData, 'PNG', qrX, qrY, 25, 25); // Set a fixed size for the QR code
+                    }
                 }
 
                 pdf.save(`Certificate-${regNumber}.pdf`);
