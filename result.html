@@ -8,181 +8,244 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
-            font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
-            background: #f8fafc; /* Lighter background */
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background: linear-gradient(135deg, #e6f0fa 0%, #f8fafc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin: 0;
-            padding: 20px;
-            text-align: center;
-            color: #333;
+            padding: 1.5rem;
+            color: #1f2937;
         }
-        a { color: #3b82f6; text-decoration: none; } /* Modern blue for links */
-        a:hover { text-decoration: underline; }
-        #loader { text-align: center; padding: 50px; font-size: 20px; color: #555; }
-        .not-found { text-align: center; padding: 50px; color: #ef4444; } /* Brighter error red */
-
+        a { 
+            color: #2563eb; 
+            text-decoration: none; 
+            transition: color 0.2s ease; 
+        }
+        a:hover { 
+            color: #1e40af; 
+            text-decoration: underline; 
+        }
+        #loader { 
+            text-align: center; 
+            padding: 3rem; 
+            font-size: 1.25rem; 
+            color: #4b5563; 
+        }
+        .not-found { 
+            text-align: center; 
+            padding: 3rem; 
+            color: #dc2626; 
+            background: #fef2f2; 
+            border-radius: 0.75rem; 
+            max-width: 32rem; 
+            margin: 1rem auto; 
+        }
         .certificate-container {
-            max-width: 900px;
-            margin: 20px auto;
+            max-width: 64rem;
+            margin: 2rem auto;
             background: #ffffff;
-            border-radius: 12px; /* Slightly less rounded */
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08); /* Softer shadow */
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            padding: 50px; /* More internal padding */
+            padding: 2rem;
             position: relative;
-            border: 1px solid #e2e8f0; /* Subtle border */
+            border: 1px solid #e5e7eb;
         }
         .certificate-container::before {
             content: "";
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 550px; /* Slightly larger watermark */
-            height: 550px;
-            transform: translate(-50%, -50%) rotate(-10deg); /* Less aggressive rotation */
-            background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/7photo/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
+            width: 24rem;
+            height: 24rem;
+            transform: translate(-50%, -50%) rotate(-10deg);
+            background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
-            opacity: 0.03; /* Even lighter watermark */
-            filter: blur(0.5px); /* Softer blur */
+            opacity: 0.05;
+            filter: blur(2px);
             z-index: 0;
         }
-        .certificate-container > * { position: relative; z-index: 1; }
-
-        .lang-toggle { text-align: right; margin-bottom: 15px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        .certificate-container > * { 
+            position: relative; 
+            z-index: 1; 
+        }
+        .lang-toggle { 
+            display: flex; 
+            justify-content: flex-end; 
+            max-width: 64rem; 
+            margin: 1rem auto; 
+            gap: 0.5rem; 
+        }
         .lang-toggle button {
-            padding: 10px 22px;
-            margin-left: 12px;
-            cursor: pointer;
-            border-radius: 8px; /* Slightly less rounded for a cleaner look */
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
             border: none;
-            background: #3b82f6; /* Modern blue */
+            background: #2563eb;
             color: white;
-            font-weight: 600; /* Slightly bolder */
+            font-weight: 500;
+            cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Softer shadow for buttons */
         }
-        .lang-toggle button:hover:enabled { background: #2563eb; transform: translateY(-1px); }
-        .lang-toggle button:disabled { background: #cbd5e1; cursor: not-allowed; } /* Lighter disabled state */
-
-        .cert-header {
-            background-color: transparent;
-            padding: 0 0 30px 0; /* More space */
-            text-align: center;
-            border-bottom: 1px solid #e5e7eb; /* Light, clean separator */
-            margin-bottom: 30px;
+        .lang-toggle button:hover:enabled { 
+            background: #1e40af; 
+            transform: translateY(-1px); 
         }
-        .company-logo { max-height: 110px; object-fit: contain; } /* Slightly larger logo */
-
-        .cert-body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 20px 0;
+        .lang-toggle button:disabled { 
+            background: #9ca3af; 
+            cursor: not-allowed; 
         }
-        .profile-picture-container { margin-bottom: 25px; } /* More space */
-        .profile-picture { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 4px solid #3b82f6; } /* Modern blue border */
-        .person-info { margin-top: 15px; }
-        .person-info .name { font-size: 38px; margin: 0; color: #1f2937; font-weight: 700; } /* Larger, bolder name */
-        .person-info .designation { font-size: 26px; margin: 8px 0; color: #3b82f6; } /* Modern blue for designation */
-        .person-info .company { font-size: 20px; color: #6b7280; } /* Softer gray for company */
-
-        .cert-details {
-            margin: 50px 0; /* More vertical space */
-            padding: 25px; /* More internal padding */
-            border: 1px solid #e5e7eb; /* Clean solid border */
-            border-radius: 8px;
-            background-color: #fcfdfe; /* Very light background */
+        .cert-header { 
+            padding: 1.5rem; 
+            text-align: center; 
+            background: linear-gradient(to bottom, #f8fafc, #ffffff); 
         }
-        .detail-item { padding: 15px 0; border-bottom: 1px solid #f3f4f6; /* Very light separator */
-            font-size: 18px; display: flex; justify-content: space-between; align-items: center; }
-        .detail-item:last-child { border-bottom: none; }
-        .detail-key { font-weight: 600; color: #1f2937; } /* Bolder key */
-        .detail-value { color: #4b5563; } /* Slightly darker value */
-
-        .cert-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-top: 50px; /* More space */
-            padding-top: 30px;
-            border-top: 1px solid #e5e7eb; /* Clean separator */
+        .company-logo { 
+            max-height: 5rem; 
+            object-fit: contain; 
         }
-        .qr-code { width: 110px; height: 110px; } /* Slightly larger QR */
-        .reg-number { font-weight: 700; font-size: 26px; color: #1f2937; text-align: right; } /* Bolder reg number */
-
+        .cert-body { 
+            display: flex; 
+            align-items: center; 
+            padding: 2rem; 
+            gap: 1.5rem; 
+            flex-wrap: wrap; 
+        }
+        .profile-picture-container { 
+            flex: 0 0 10rem; 
+            text-align: center; 
+        }
+        .profile-picture { 
+            width: 10rem; 
+            height: 10rem; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 3px solid #2563eb; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+        }
+        .person-info { 
+            flex: 1; 
+            text-align: left; 
+        }
+        .person-info .name { 
+            font-size: 1.75rem; 
+            margin: 0; 
+            color: #1f2937; 
+            font-weight: 700; 
+        }
+        .person-info .designation { 
+            font-size: 1.25rem; 
+            margin: 0.25rem 0; 
+            color: #2563eb; 
+            font-weight: 500; 
+        }
+        .person-info .company { 
+            font-size: 1.125rem; 
+            color: #4b5563; 
+        }
+        .cert-details { 
+            margin: 1.5rem; 
+            padding: 0.5rem; 
+        }
+        .detail-item { 
+            padding: 0.75rem 0; 
+            border-bottom: 1px solid #e5e7eb; 
+            font-size: 1rem; 
+            display: flex; 
+            justify-content: space-between; 
+        }
+        .detail-key { 
+            font-weight: 600; 
+            color: #1f2937; 
+        }
+        .detail-value { 
+            color: #374151; 
+        }
+        .cert-footer { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin: 1.5rem; 
+            padding: 0.75rem 1.5rem; 
+            color: #6b7280; 
+            font-size: 0.875rem; 
+        }
+        .qr-code { 
+            width: 5rem; 
+            height: 5rem; 
+        }
+        .reg-number { 
+            font-weight: 600; 
+            font-size: 1.125rem; 
+            color: #1f2937; 
+        }
         .back-button {
             position: fixed;
-            top: 20px;
-            left: 20px;
-            padding: 10px 22px;
-            cursor: pointer;
-            border-radius: 8px;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
             border: none;
-            background: #4b5563; /* Darker gray for back button */
+            background: #374151;
             color: white;
-            font-size: 16px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
             z-index: 1000;
-            font-weight: 600;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .back-button:hover { background: #374151; transform: translateY(-1px); }
-
+        .back-button:hover { 
+            background: #1f2937; 
+            transform: translateY(-1px); 
+        }
         @media print {
             body { 
-                background-color: #fff; 
-                margin: 0; 
-                padding: 0; 
-                font-family: 'Noto Sans Bengali', sans-serif;
+                background: #fff; 
             }
             .certificate-container { 
                 box-shadow: none; 
                 margin: 0; 
-                border-radius: 0; 
-                background-image: none; 
-                padding: 0; 
-                border: none;
-                width: 210mm; /* A4 width */
-                min-height: 297mm; /* A4 height */
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between; /* Distribute content nicely */
+                border: none; 
             }
-            .certificate-container::before { opacity: 0.03; width: 400px; height: 400px; } /* Smaller, fainter watermark for print */
-            #loader, .not-found, .back-button, .lang-toggle, #download-btn { display: none; }
-            
-            .cert-header { padding-top: 30px; border-bottom: 1px solid #e5e7eb; margin-bottom: 20px; }
-            .company-logo { max-height: 90px; }
-            .cert-body { padding: 15px 0; }
-            .profile-picture { width: 140px; height: 140px; border: 3px solid #3b82f6; }
-            .person-info .name { font-size: 32px; }
-            .person-info .designation { font-size: 22px; }
-            .person-info .company { font-size: 18px; }
-            .cert-details { margin: 25px 0; padding: 15px; border-radius: 0; border: 1px solid #e5e7eb; }
-            .detail-item { font-size: 16px; padding: 10px 0; }
-            .cert-footer { margin-top: 25px; padding-top: 15px; border-top: 1px solid #e5e7eb; justify-content: space-around; } /* More balanced footer for print */
-            .reg-number { font-size: 20px; }
-            .qr-code { width: 80px; height: 80px; }
+            .certificate-container::before { 
+                opacity: 0.03; 
+            }
+            #loader, .not-found, .back-button, .lang-toggle, #download-btn { 
+                display: none; 
+            }
         }
-
         @media (max-width: 600px) {
-            .certificate-container { padding: 20px; }
-            .cert-body { flex-direction: column; align-items: center; text-align: center; }
-            .person-info { text-align: center; }
-            .cert-footer { flex-direction: column; gap: 10px; align-items: center; }
-            .detail-item { flex-direction: column; text-align: center; align-items: center; }
-            .lang-toggle { text-align: center; }
-            .lang-toggle button { margin: 5px; }
-            .back-button { top: 10px; left: 10px; padding: 8px 16px; font-size: 14px; }
+            .cert-body { 
+                flex-direction: column; 
+                align-items: center; 
+                text-align: center; 
+            }
+            .person-info { 
+                text-align: center; 
+            }
+            .cert-footer { 
+                flex-direction: column; 
+                gap: 0.75rem; 
+                align-items: center; 
+            }
+            .detail-item { 
+                flex-direction: column; 
+                text-align: center; 
+            }
+            .profile-picture { 
+                width: 8rem; 
+                height: 8rem; 
+            }
         }
     </style>
 </head>
@@ -215,7 +278,6 @@
         const downloadBtn = document.getElementById('download-btn');
         const bnBtn = document.getElementById('bn-btn');
         const enBtn = document.getElementById('en-btn');
-
         function updateNotFoundText() {
             if (currentLang === 'bn') {
                 document.getElementById('nf-title').textContent = 'দুঃখিত, কোনো ফলাফল পাওয়া যায়নি।';
@@ -233,7 +295,6 @@
                 downloadBtn.textContent = 'Download PDF';
             }
         }
-
         async function loadCertificate(lang) {
             currentLang = lang;
             loader.style.display = 'block';
@@ -241,14 +302,12 @@
             certificateContainer.style.display = 'block';
             certificateContainer.innerHTML = `<div id="loader">${lang === 'bn' ? 'লোড হচ্ছে...' : 'Loading...'}</div>`;
             notFound.style.display = 'none';
-
             try {
                 const response = await fetch(dataFiles[lang]);
                 if (!response.ok) throw new Error('Network error');
                 const data = await response.json();
                 const person = data.find(item => item.registration_number && item.registration_number.toLowerCase() === regNumber.toLowerCase());
                 loader.style.display = 'none';
-
                 if (person) {
                     displayCertificate(person, lang, certificateContainer);
                     downloadBtn.style.display = 'inline-block';
@@ -263,7 +322,6 @@
                 console.error(error);
             }
         }
-
         function displayCertificate(person, lang, targetElement) {
             let detailsHtml = '';
             if (person.details) {
@@ -271,18 +329,15 @@
                     detailsHtml += `<div class="detail-item"><span class="detail-key">${key}</span><span class="detail-value">${person.details[key]}</span></div>`;
                 }
             }
-
             const bnText = lang === 'bn' ? 'বাংলা' : 'Bengali';
             const enText = lang === 'bn' ? 'English' : 'ইংরেজি';
             const downloadText = lang === 'bn' ? 'ডাউনলোড PDF' : 'Download PDF';
             const regText = lang === 'bn' ? 'রেজিস্ট্রেশন নম্বর' : 'Registration No';
             const backBtnText = lang === 'bn' ? 'হোম' : 'Go Back';
-
             document.getElementById('bn-btn').textContent = bnText;
             document.getElementById('en-btn').textContent = enText;
             document.getElementById('download-btn').textContent = downloadText;
             document.querySelector('.back-button').textContent = backBtnText;
-
             targetElement.innerHTML = `
                 <header class="cert-header">
                     <img src="${person.logo_url || ''}?raw=true" alt="Company Logo" class="company-logo" onerror="this.style.display='none'">
@@ -299,23 +354,20 @@
                 </main>
                 <section class="cert-details">${detailsHtml}</section>
                 <footer class="cert-footer">
-                    <div class="qr-code"></div>
                     <div class="reg-number">${regText}: ${person.registration_number || 'N/A'}</div>
+                    <div class="qr-code"></div>
                 </footer>
             `;
-
             const qrCodeElement = targetElement.querySelector(".qr-code");
             if (qrCodeElement) {
                 qrCodeElement.innerHTML = '';
-                new QRCode(qrCodeElement, { text: window.location.href, width: 90, height: 90 });
+                new QRCode(qrCodeElement, { text: window.location.href, width: 80, height: 80 });
             }
         }
-
         async function generatePdf() {
             const originalBtnText = downloadBtn.textContent;
             downloadBtn.disabled = true;
             downloadBtn.textContent = 'Processing...';
-
             try {
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
@@ -326,15 +378,13 @@
                 tempContainer.style.top = '0';
                 tempContainer.style.width = '900px';
                 document.body.appendChild(tempContainer);
-
                 const languages = ['bn', 'en'];
                 for (let i = 0; i < languages.length; i++) {
                     const lang = languages[i];
                     const response = await fetch(dataFiles[lang]);
                     const data = await response.json();
-                    const person = data.find(item => item.registration_number && item.registration_number.toLowerCase() === regNumber.toLowerCase());
+                    const person = data.find(item => item.registration_number.toLowerCase() === regNumber.toLowerCase());
                     if (!person) continue;
-
                     displayCertificate(person, lang, tempContainer);
                     await new Promise(resolve => {
                         const images = tempContainer.querySelectorAll('img');
@@ -354,27 +404,23 @@
                         if (imagesLoaded === images.length) resolve();
                     });
                     await new Promise(resolve => setTimeout(resolve, 300));
-
                     const canvas = await html2canvas(tempContainer, {
-                        scale: 1.5,
+                        scale: 2,
                         useCORS: true,
                         allowTaint: true,
                         ignoreElements: (element) => element.classList.contains('lang-toggle')
                     });
-
-                    const imgData = canvas.toDataURL('image/jpeg', 0.6);
+                    const imgData = canvas.toDataURL('image/png');
                     if (i > 0) pdf.addPage();
                     const imgProps = pdf.getImageProperties(imgData);
                     const pdfWidth = pdf.internal.pageSize.getWidth();
                     const pdfHeight = pdf.internal.pageSize.getHeight();
                     const ratio = imgProps.width / imgProps.height;
                     let imgHeight = pdfWidth / ratio;
-                    pdf.addImage(imgData, 'JPEG', 0, (pdfHeight - imgHeight) / 2, pdfWidth, imgHeight, undefined, 'FAST');
+                    pdf.addImage(imgData, 'PNG', 0, (pdfHeight - imgHeight) / 2, pdfWidth, imgHeight);
                 }
-
                 pdf.save(`Certificate-${regNumber}.pdf`);
                 document.body.removeChild(tempContainer);
-
             } catch (error) {
                 console.error('PDF Generation Failed:', error);
                 alert('দুঃখিত, PDF তৈরি করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।');
@@ -383,7 +429,6 @@
                 downloadBtn.textContent = originalBtnText;
             }
         }
-
         if (regNumber) {
             loadCertificate('bn');
         } else {
