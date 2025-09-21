@@ -74,12 +74,14 @@
         .cert-header {
             background-color: transparent;
             padding: 0 0 20px 0;
-            text-align: left;
+            /* Changed to center logo */
+            text-align: center; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
             border-bottom: 1px solid #c0a060;
             margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            gap: 15px; /* Adjust as needed for spacing if there are other elements */
         }
         .company-logo { max-height: 70px; /* Increased logo size */
             object-fit: contain; }
@@ -87,8 +89,9 @@
         .cert-body {
             display: flex;
             align-items: center;
+            flex-direction: column; /* Centered content */
             gap: 20px;
-            text-align: left;
+            text-align: center; /* Centered text */
             padding: 20px 0;
         }
         .profile-picture { width: 150px; /* Increased photo size */
