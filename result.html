@@ -22,21 +22,21 @@
             text-align: center;
             color: #333;
         }
-        a { color: #2980b9; text-decoration: none; }
+        a { color: #c0a060; text-decoration: none; }
         a:hover { text-decoration: underline; }
         #loader { text-align: center; padding: 50px; font-size: 20px; color: #555; }
         .not-found { text-align: center; padding: 50px; color: #e74c3c; }
-        
+
         .certificate-container {
             max-width: 900px;
             margin: 20px auto;
-            background: #fff;
+            background: #ffffff;
             border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
             overflow: hidden;
-            padding-bottom: 40px;
+            padding: 40px;
             position: relative;
-            background-image: radial-gradient(circle at center, #fefefe, #f0f0f0);
+            border: 2px solid #c0a060;
         }
         .certificate-container::before {
             content: "";
@@ -46,16 +46,16 @@
             width: 500px;
             height: 500px;
             transform: translate(-50%, -50%) rotate(-15deg);
-            background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel/main/foldername/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
+            background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/7photo/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
-            opacity: 0.06;
+            opacity: 0.05;
             filter: blur(1px);
             z-index: 0;
         }
         .certificate-container > * { position: relative; z-index: 1; }
-        
+
         .lang-toggle { text-align: right; margin-bottom: 10px; max-width: 900px; margin-left: auto; margin-right: auto; }
         .lang-toggle button {
             padding: 10px 20px;
@@ -63,39 +63,61 @@
             cursor: pointer;
             border-radius: 25px;
             border: none;
-            background: #2980b9;
+            background: #2c3e50;
             color: white;
             font-weight: bold;
             transition: background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .lang-toggle button:hover:enabled { background: #1f6391; transform: translateY(-2px); }
+        .lang-toggle button:hover:enabled { background: #34495e; transform: translateY(-2px); }
         .lang-toggle button:disabled { background: #95a5a6; cursor: not-allowed; }
-        
-        .cert-header { 
-            background-color: #ffffff; 
-            padding: 20px; 
-            text-align: center; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+
+        .cert-header {
+            background-color: transparent;
+            padding: 0 0 20px 0;
+            text-align: center;
+            border-bottom: 1px solid #c0a060;
+            margin-bottom: 20px;
         }
-        .company-logo { max-height: 90px; object-fit: contain; }
-        .cert-body { display: flex; align-items: center; padding: 30px 20px; gap: 20px; flex-wrap: wrap; }
-        .profile-picture-container { flex: 0 0 150px; text-align: center; }
-        .profile-picture { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid #3498db; }
-        .person-info { flex: 1; text-align: left; }
-        .person-info .name { font-size: 32px; margin: 0; color: #2c3e50; font-weight: bold; }
-        .person-info .designation { font-size: 22px; margin: 5px 0; color: #2980b9; }
-        .person-info .company { font-size: 18px; color: #555; }
-        .cert-details { margin: 20px; padding: 10px; }
-        .detail-item { padding: 12px 0; border-bottom: 1px dashed #bdc3c7; font-size: 18px; display: flex; justify-content: space-between; }
-        .detail-key { font-weight: bold; color: #34495e; }
-        .detail-value { color: #2c3e50; }
-        .cert-footer { display: flex; justify-content: space-between; align-items: center; margin: 20px; padding: 10px 20px; color: #7f8c8d; font-size: 14px; }
+        .company-logo { max-height: 100px; object-fit: contain; }
+
+        .cert-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .profile-picture-container { margin-bottom: 20px; }
+        .profile-picture { width: 180px; height: 180px; border-radius: 50%; object-fit: cover; border: 4px solid #c0a060; }
+        .person-info { margin-top: 10px; }
+        .person-info .name { font-size: 36px; margin: 0; color: #2c3e50; font-weight: bold; }
+        .person-info .designation { font-size: 24px; margin: 5px 0; color: #c0a060; }
+        .person-info .company { font-size: 20px; color: #555; }
+
+        .cert-details {
+            margin: 40px 0;
+            padding: 20px;
+            border: 1px dashed #bdc3c7;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .detail-item { padding: 10px 0; border-bottom: 1px dashed #e0e0e0; font-size: 18px; display: flex; justify-content: space-between; align-items: center; }
+        .detail-item:last-child { border-bottom: none; }
+        .detail-key { font-weight: bold; color: #2c3e50; }
+        .detail-value { color: #555; }
+
+        .cert-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #c0a060;
+        }
         .qr-code { width: 100px; height: 100px; }
-        .reg-number { font-weight: bold; font-size: 22px; color: #2c3e50; }
-        
+        .reg-number { font-weight: bold; font-size: 24px; color: #2c3e50; text-align: right; }
+
         .back-button {
             position: fixed;
             top: 20px;
@@ -116,18 +138,23 @@
 
         @media print {
             body { background-color: #fff; margin: 0; padding: 0; font-family: 'Noto Sans Bengali', sans-serif; }
-            .certificate-container { box-shadow: none; margin: 0; border-radius: 0; background-image: none; padding-bottom: 0; }
+            .certificate-container { box-shadow: none; margin: 0; border-radius: 0; background-image: none; padding: 0; border: none; }
             .certificate-container::before { opacity: 0.04; }
             #loader, .not-found, .back-button, .lang-toggle, #download-btn { display: none; }
-            .cert-header, .cert-body, .cert-details, .cert-footer { padding: 10px; margin: 5px; }
-            .person-info .name { font-size: 28px; }
-            .person-info .designation { font-size: 20px; }
+            .cert-header { padding-top: 30px; border-bottom: 1px solid #c0a060; }
+            .cert-body { padding: 20px 0; }
+            .profile-picture { width: 150px; height: 150px; border: 3px solid #c0a060; }
+            .person-info .name { font-size: 30px; }
+            .person-info .designation { font-size: 22px; }
+            .cert-details { margin: 20px 0; padding: 15px; border-radius: 0; border: 1px dashed #bdc3c7; }
             .detail-item { font-size: 16px; }
+            .cert-footer { margin-top: 30px; border-top: 1px solid #c0a060; }
             .reg-number { font-size: 20px; }
-            .qr-code { width: 90px; height: 90px; }
+            .qr-code { width: 80px; height: 80px; }
         }
 
         @media (max-width: 600px) {
+            .certificate-container { padding: 20px; }
             .cert-body { flex-direction: column; align-items: center; text-align: center; }
             .person-info { text-align: center; }
             .cert-footer { flex-direction: column; gap: 10px; align-items: center; }
@@ -248,8 +275,8 @@
                 </main>
                 <section class="cert-details">${detailsHtml}</section>
                 <footer class="cert-footer">
-                    <div class="reg-number">${regText}: ${person.registration_number || 'N/A'}</div>
                     <div class="qr-code"></div>
+                    <div class="reg-number">${regText}: ${person.registration_number || 'N/A'}</div>
                 </footer>
             `;
 
@@ -305,20 +332,20 @@
                     await new Promise(resolve => setTimeout(resolve, 300));
 
                     const canvas = await html2canvas(tempContainer, {
-                        scale: 1.5, // Reduced scale for smaller file size
+                        scale: 1.5,
                         useCORS: true,
                         allowTaint: true,
                         ignoreElements: (element) => element.classList.contains('lang-toggle')
                     });
 
-                    const imgData = canvas.toDataURL('image/jpeg', 0.6); // Changed to JPEG with 60% quality
+                    const imgData = canvas.toDataURL('image/jpeg', 0.6);
                     if (i > 0) pdf.addPage();
                     const imgProps = pdf.getImageProperties(imgData);
                     const pdfWidth = pdf.internal.pageSize.getWidth();
                     const pdfHeight = pdf.internal.pageSize.getHeight();
                     const ratio = imgProps.width / imgProps.height;
                     let imgHeight = pdfWidth / ratio;
-                    pdf.addImage(imgData, 'JPEG', 0, (pdfHeight - imgHeight) / 2, pdfWidth, imgHeight, undefined, 'FAST'); // Added compression option
+                    pdf.addImage(imgData, 'JPEG', 0, (pdfHeight - imgHeight) / 2, pdfWidth, imgHeight, undefined, 'FAST');
                 }
 
                 pdf.save(`Certificate-${regNumber}.pdf`);
