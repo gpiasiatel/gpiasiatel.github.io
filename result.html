@@ -42,7 +42,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 600px; /* Increased size for subtle watermark */
+            width: 600px;
             height: 600px;
             transform: translate(-50%, -50%) rotate(-15deg);
             background-image: url('https://raw.githubusercontent.com/gpiasiatel/gpiasiatel.github.io/main/7photo/WhatsApp_Image_2025-08-28_at_3.14.15_PM-removebg-preview.png');
@@ -74,50 +74,49 @@
         .cert-header {
             background-color: transparent;
             padding: 0 0 20px 0;
-            /* Changed to center logo */
-            text-align: center; 
+            text-align: center;
             display: flex;
             justify-content: center;
             align-items: center;
             border-bottom: 1px solid #c0a060;
             margin-bottom: 20px;
-            gap: 15px; /* Adjust as needed for spacing if there are other elements */
+            gap: 15px;
         }
-        .company-logo { max-height: 70px; /* Increased logo size */
+        .company-logo { max-height: 70px;
             object-fit: contain; }
 
         .cert-body {
             display: flex;
             align-items: center;
-            flex-direction: column; /* Centered content */
+            flex-direction: column;
             gap: 20px;
-            text-align: center; /* Centered text */
+            text-align: center;
             padding: 20px 0;
         }
-        .profile-picture { width: 150px; /* Increased photo size */
-            height: 150px; /* Increased photo size */
+        .profile-picture { width: 150px;
+            height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            border: 5px solid #1e40af; /* Slightly thicker border */
+            border: 5px solid #1e40af;
         }
         .person-info { margin-top: 10px; }
-        .person-info .name { font-size: 32px; /* Increased font size */
+        .person-info .name { font-size: 32px;
             margin: 0;
             color: #2c3e50;
             font-weight: bold; }
-        .person-info .designation { font-size: 22px; /* Increased font size */
+        .person-info .designation { font-size: 22px;
             margin: 5px 0;
             color: #1e40af; }
-        .person-info .company { font-size: 18px; /* Increased font size */
+        .person-info .company { font-size: 18px;
             color: #555; }
 
         .cert-details {
-            margin: 50px 0; /* Increased margin */
+            margin: 50px 0;
             padding: 20px;
         }
-        .detail-item { padding: 12px 0; /* Increased padding */
+        .detail-item { padding: 12px 0;
             border-bottom: 1px dashed #e0e0e0;
-            font-size: 18px; /* Increased font size */
+            font-size: 18px;
             display: flex;
             justify-content: space-between;
             align-items: center; }
@@ -129,14 +128,14 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: 50px; /* Increased margin */
+            margin-top: 50px;
             padding-top: 25px;
             border-top: 1px solid #1e40af;
         }
-        .qr-code { width: 120px; /* Increased QR code size */
-            height: 120px; /* Increased QR code size */
+        .qr-code { width: 120px;
+            height: 120px;
         }
-        .reg-number { font-weight: bold; font-size: 22px; /* Increased font size */
+        .reg-number { font-weight: bold; font-size: 22px;
             color: #2c3e50;
             text-align: right; }
         .footer-logo { max-height: 50px; object-fit: contain; }
@@ -159,17 +158,27 @@
         }
         .back-button:hover { background: #2c3e50; transform: translateY(-2px); }
 
+        /* A4 Print Optimization */
         @media print {
-            body { background-color: #fff; margin: 0; padding: 0; font-family: 'Noto Sans Bengali', sans-serif; }
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            body {
+                background-color: #fff;
+                margin: 0;
+                padding: 0;
+                font-family: 'Noto Sans Bengali', sans-serif;
+            }
             .certificate-container {
                 box-shadow: none;
                 margin: 0;
                 border-radius: 0;
                 background-image: none;
-                padding: 10mm 15mm;
+                padding: 20mm; /* A4 size professional margin */
                 border: none;
-                width: 210mm;
-                min-height: 297mm;
+                width: 210mm; /* A4 width */
+                min-height: 297mm; /* A4 height */
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
@@ -324,7 +333,7 @@
             const qrCodeElement = targetElement.querySelector(".qr-code");
             if (qrCodeElement) {
                 qrCodeElement.innerHTML = '';
-                new QRCode(qrCodeElement, { text: window.location.href, width: 110, height: 110 }); /* Adjusted for larger size */
+                new QRCode(qrCodeElement, { text: window.location.href, width: 110, height: 110 });
             }
         }
 
@@ -373,12 +382,12 @@
                     await new Promise(resolve => setTimeout(resolve, 300));
 
                     const canvas = await html2canvas(tempContainer, {
-                        scale: 2.5, /* Increased scale for much better resolution */
+                        scale: 3, /* Increased scale for even better resolution */
                         useCORS: true,
                         allowTaint: true,
                         ignoreElements: (element) => element.classList.contains('lang-toggle')
                     });
-                    const imgData = canvas.toDataURL('image/jpeg', 0.9); /* Increased quality to 90% */
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0); /* Set quality to maximum */
 
                     if (i > 0) pdf.addPage();
                     const imgProps = pdf.getImageProperties(imgData);
