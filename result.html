@@ -172,13 +172,12 @@
             }
             .certificate-container {
                 box-shadow: none;
-                margin: 0;
+                margin: 0 auto; /* Centered for print */
                 border-radius: 0;
                 background-image: none;
-                padding: 15mm; /* Adjusted padding for a smaller margin */
-                border: none;
-                width: 210mm;
-                min-height: 297mm;
+                /* Smaller container width and height to create a blank border */
+                width: 180mm;
+                height: 267mm; 
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
@@ -187,21 +186,21 @@
             .certificate-container::before { opacity: 0.04; width: 400px; height: 400px; }
             #loader, .not-found, .back-button, .lang-toggle, #download-btn { display: none; }
             .cert-header { padding-top: 0; border-bottom: 1px solid #1e40af; margin-bottom: 8mm; }
-            .company-logo { max-height: 35px; /* Slightly smaller for print */ }
+            .company-logo { max-height: 35px; }
             .cert-body { padding: 0; margin-bottom: 8mm; }
-            .profile-picture { width: 80px; /* Slightly smaller for print */
-                height: 80px; /* Slightly smaller for print */
+            .profile-picture { width: 80px;
+                height: 80px;
                 border: 3px solid #1e40af; }
-            .person-info .name { font-size: 20px; /* Adjusted for smaller size */ }
-            .person-info .designation { font-size: 14px; /* Adjusted for smaller size */ }
-            .person-info .company { font-size: 12px; /* Adjusted for smaller size */ }
+            .person-info .name { font-size: 20px; }
+            .person-info .designation { font-size: 14px; }
+            .person-info .company { font-size: 12px; }
             .cert-details { margin: 0; padding: 0; }
-            .detail-item { font-size: 12px; /* Adjusted for smaller size */
+            .detail-item { font-size: 12px;
                 padding: 6px 0; }
             .cert-footer { margin-top: 10mm; padding-top: 8mm; border-top: 1px solid #1e40af; }
-            .reg-number { font-size: 14px; /* Adjusted for smaller size */ }
-            .qr-code { width: 50px; /* Adjusted for smaller size */
-                height: 50px; /* Adjusted for smaller size */ }
+            .reg-number { font-size: 14px; }
+            .qr-code { width: 50px;
+                height: 50px; }
         }
 
         @media (max-width: 600px) {
@@ -399,9 +398,9 @@
                     const pdfHeight = pdf.internal.pageSize.getHeight();
                     const ratio = imgProps.width / imgProps.height;
                     let imgHeight = pdfWidth / ratio;
-                    pdf.addImage(imgData, 'JPEG', 0, (pdfHeight - imgHeight) / 2, pdfWidth, imgHeight, undefined, 'FAST');
+                    pdf.addImage(imgData, 'JPEG', (pdfWidth - imgProps.width/3) / 2, (pdfHeight - imgProps.height/3) / 2, imgProps.width/3, imgProps.height/3);
                 }
-
+                
                 pdf.save(`Certificate-${regNumber}.pdf`);
                 document.body.removeChild(tempContainer);
 
