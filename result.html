@@ -305,20 +305,20 @@
                     await new Promise(resolve => setTimeout(resolve, 300));
 
                     const canvas = await html2canvas(tempContainer, {
-                        scale: 2,
+                        scale: 1.5, // Reduced scale for smaller file size
                         useCORS: true,
                         allowTaint: true,
                         ignoreElements: (element) => element.classList.contains('lang-toggle')
                     });
 
-                    const imgData = canvas.toDataURL('image/png');
+                    const imgData = canvas.toDataURL('image/jpeg', 0.6); // Changed to JPEG with 60% quality
                     if (i > 0) pdf.addPage();
                     const imgProps = pdf.getImageProperties(imgData);
                     const pdfWidth = pdf.internal.pageSize.getWidth();
                     const pdfHeight = pdf.internal.pageSize.getHeight();
                     const ratio = imgProps.width / imgProps.height;
                     let imgHeight = pdfWidth / ratio;
-                    pdf.addImage(imgData, 'PNG', 0, (pdfHeight - imgHeight) / 2, pdfWidth, imgHeight);
+                    pdf.addImage(imgData, 'JPEG', 0, (pdfHeight - imgHeight) / 2, pdfWidth, imgHeight, undefined, 'FAST'); // Added compression option
                 }
 
                 pdf.save(`Certificate-${regNumber}.pdf`);
